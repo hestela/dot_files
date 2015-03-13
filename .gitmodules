@@ -85,8 +85,8 @@
 [submodule ".vim/bundle/vim-colors-solarized"]
     path = .vim/bundle/vim-colors-solarized
       url = https://github.com/altercation/vim-colors-solarized
-[submodule ".vim/bundle/im-go"]
-    path = .vim/bundle/im-go
+[submodule ".vim/bundle/vim-go"]
+    path = .vim/bundle/vim-go
       url = https://github.com/fatih/vim-go
 [submodule ".vim/bundle/tslime.vim"]
     path = .vim/bundle/tslime.vim
@@ -96,10 +96,10 @@
       url = https://github.com/dkprice/vim-easygrep
 [submodule ".vim/bundle/vim-sensible"]
     path = .vim/bundle/vim-sensible
-      url = https://github.com/tpope/
+      url = https://github.com/tpope/vim-sensible
 [submodule ".vim/bundle/vim-ruby"]
     path = .vim/bundle/vim-ruby
-      url = https://github.com/vim-ruby/
+      url = https://github.com/vim-ruby/vim-ruby/
 [submodule ".vim/bundle/vim-markdown"]
     path = .vim/bundle/vim-markdown
       url = https://github.com/plasticboy/vim-markdown
