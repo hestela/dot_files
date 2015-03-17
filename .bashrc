@@ -6,4 +6,10 @@
   export PS1='\[\e[00;33m\][\w]\[\e[0m\]\[\033[00;35m\]$(__git_ps1 " (%s)")\n\[\033[00;36m\][\h.\u]\[\033[36m\]\[\033[0m\] > '
 
 # Aliases
-  alias tmux='TERM=screen-256color-bce tmux'
+if [[ -n $(infocmp screen-256color-bce 2>/dev/null) ]]; then
+  alias tmux="TERM=screen-256color-bce tmux"
+elif [[ -n $(infocmp screen-256color) ]]; then
+  alias tmux="TERM=screen-256color tmux"
+else
+  >&2 echo "ERROR: screen-256color and screen-256color-bce TERM not valid for this system"
+fi
