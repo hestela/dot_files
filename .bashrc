@@ -3,7 +3,7 @@
   export EDITOR="$VISUAL"
   export GIT_PS1_SHOWDIRTYSTATE=true
   export GIT_PS1_SHOWUNTRACKEDFILES=true
-  export PS1='\[\e[00;33m\][\w]\[\e[0m\]\[\033[00;35m\]$(parse_git_branch())\n\[\033[00;36m\][\h.\u]\[\033[36m\]\[\033[0m\] > '
+  export PS1='\[\e[00;33m\][\w]\[\e[0m\]\[\033[00;35m\]$(parse_git_branch)\n\[\033[00;36m\][\h.\u]\[\033[36m\]\[\033[0m\] > '
 
 # Aliases
 if [[ -n $(infocmp screen-256color-bce 2>/dev/null) ]]; then
