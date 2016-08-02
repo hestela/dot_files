@@ -7,17 +7,20 @@ Plugin 'Lokaltog/vim-easymotion'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'blarghmatey/split-expander'
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'corpix/cello.vim'
+Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'derekwyatt/vim-scala'
 Plugin 'dkprice/vim-easygrep'
-Plugin 'fatih/vim-go'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'kana/vim-textobj-user'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'kien/ctrlp.vim'
-Plugin 'kikijump/tslime.vim'
+Plugin 'jgdavey/tslime.vim'
 Plugin 'myusuf3/numbers.vim'
 Plugin 'nelstrom/vim-textobj-rubyblock'
+Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdtree'
@@ -31,6 +34,7 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
+Plugin 'fatih/vim-go'
 Plugin 'tpope/vim-haml'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-sensible'
@@ -38,12 +42,15 @@ Plugin 'tpope/vim-surround'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-scripts/tComment'
 Plugin 'wting/rust.vim'
+Plugin 'justinmk/vim-syntax-extra'
 
 call vundle#end()
 filetype plugin indent on
 
 syntax enable
-set list listchars=tab:»·,trail:·
+highlight ExtraWhitespace ctermbg = black
+"set list listchars=tab:»·,trail:·
+set list listchars=tab:▶·,trail:·
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
 let g:solarized_degrade=0
@@ -65,6 +72,11 @@ autocmd BufNewFile,BufRead *.slim set filetype=slim
 
 " Fix rust
 autocmd FileType rust setlocal shiftwidth=2 tabstop=2
+
+" Fix mutt
+"autocmd FileType mail setlocal fo+=aw
+autocmd FileType mail set spell
+autocmd FileType mail set textwidth=76
 
 " Fix coffee
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
@@ -131,6 +143,12 @@ set ttimeout
 set ttimeoutlen=20
 set notimeout
 
+" Enable rainbow parens
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
 " Edit another file in the same directory as the current file
 " uses expression to extract path from current file's path
 map <Leader>e :e <C-R>=expand("%:p:h") . '/'<CR>
@@ -194,3 +212,10 @@ map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
 
 autocmd BufRead,BufNewFile *.rs set filetype=rust
+
+" N3RDTreeIgnore
+let NERDTreeIgnore = ['\.pyc$','\.class$']
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.class,*.d,*.o
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|class|o|d)$'
+"let g:ctrlp_working_path_mode = 'rw'
+autocmd BufRead,BufNewFile *.c,*.h set noexpandtab
