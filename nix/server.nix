@@ -3,7 +3,28 @@
 {
   environment.systemPackages = with pkgs; [
     letsencrypt                      # Auto SSL Cert
+    jenkins
   ];
+
+  services.jenkins = {
+    enable = true;
+    extraGroups = [ "essentials" ];
+    port = 8000;
+  };
+
+  services.jenkins.packages =
+    let env = pkgs.buildEnv {
+      name = "jenkins-env";
+      pathsToLink = [ "/bin" ];
+      paths = [
+        pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh pkgs.nix
+        pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip pkgs.glibc pkgs.cmake pkgs.clang
+        pkgs.gcc49
+      ];
+    };
+    in [ env ];
+
+  systemd.services.jenkins.serviceConfig.TimeoutStartSec = "10min";
 
   networking = {
     hostName = "quid"; # Define your hostname.

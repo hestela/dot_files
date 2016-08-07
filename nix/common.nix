@@ -14,8 +14,8 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 3000 8888 42063 4040 ];
-  networking.firewall.allowedUDPPorts = [ 80 3000 8888 42063 4040 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
+  networking.firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
 
   nixpkgs.config = {
     # Nonfree packages (for nvidia drivers)
@@ -74,12 +74,14 @@
   users = {
     defaultUserShell = "/run/current-system/sw/bin/bash";
 
+    extraGroups.ssl-cert.gid = 1040;
+
     extraUsers.henry = {
       isNormalUser = true;
       home = "/home/henry";
 
       # Configure for sudo, network, gfx, and docker
-      extraGroups = ["wheel" "networkmanager" "video" "docker"];
+      extraGroups = ["wheel" "networkmanager" "docker" "ssl-cert" "essentials" ];
       uid = 1000;
       shell = "/run/current-system/sw/bin/bash";
     };
