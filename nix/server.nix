@@ -28,7 +28,7 @@
       paths = [
         pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh pkgs.nix
         pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip pkgs.glibc pkgs.cmake pkgs.clang
-        pkgs.gcc49
+        pkgs.gcc49 pkgs.gnumake pkgs.findutils
       ];
     };
     in [ env ];
