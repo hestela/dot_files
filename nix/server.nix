@@ -6,6 +6,15 @@
     jenkins
   ];
 
+  nixpkgs.config.packageOverrides = pkgs: rec {
+    jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
+      src = pkgs.fetchurl {
+      url = "https://updates.jenkins-ci.org/download/war/2.7.2/jenkins.war";
+      sha256 = "b1ea4e1e72a7fe6ead79f7c93b76934d2b8291ab764fc212abe952fa4322a74a";
+    };
+   });
+  };
+
   services.jenkins = {
     enable = true;
     extraGroups = [ "essentials" ];
@@ -24,7 +33,7 @@
     };
     in [ env ];
 
-  systemd.services.jenkins.serviceConfig.TimeoutStartSec = "10min";
+  systemd.services.jenkins.serviceConfig.ExecStartPost = pkgs.lib.mkForce "";
 
   networking = {
     hostName = "quid"; # Define your hostname.
