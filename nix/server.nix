@@ -9,10 +9,10 @@
   nixpkgs.config.packageOverrides = pkgs: rec {
     jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
       src = pkgs.fetchurl {
-      url = "https://updates.jenkins-ci.org/download/war/2.7.2/jenkins.war";
-      sha256 = "b1ea4e1e72a7fe6ead79f7c93b76934d2b8291ab764fc212abe952fa4322a74a";
-    };
-   });
+        url = "http://mirrors.jenkins-ci.org/war/2.3/jenkins.war";
+        sha256 = "0x59dbvh6y25ki5jy51djbfbhf8g2j3yd9f3n66f7bkdfw8p78g1";
+      };
+    });
   };
 
   services.jenkins = {
