@@ -17,7 +17,7 @@
 
   services.jenkins = {
     enable = true;
-    extraGroups = [ "essentials" ];
+    extraGroups = [ "essentials" "docker" ];
     port = 8000;
   };
 
