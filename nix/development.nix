@@ -36,21 +36,6 @@
     ];
   };
 
-  services = {
-    # Enable postgres
-    postgresql = {
-      enable = false;
-      package = pkgs.postgresql94;
-      authentication = "local all all ident";
-    };
-
-    # Enable Mongo
-    mongodb.enable = false;
-
-    # Enable Redis
-    redis.enable = false;
-  };
-
   # Enable docker contaner svc
   virtualisation.docker.enable = true;
 

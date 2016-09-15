@@ -2,7 +2,6 @@
 
 {
   environment.systemPackages = with pkgs; [
-    letsencrypt                      # Auto SSL Cert
     jenkins
   ];
 
