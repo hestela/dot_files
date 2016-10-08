@@ -29,6 +29,7 @@
     tree                               # File tree
     unzip                              # .zip file util
     wget
+    transmission
   ];
 
 
