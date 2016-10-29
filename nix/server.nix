@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     jenkins
+    phantomjs2
   ];
 
   nixpkgs.config.packageOverrides = pkgs: rec {
@@ -28,7 +29,7 @@
         pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh pkgs.nix
         pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip pkgs.glibc pkgs.cmake pkgs.clang
         pkgs.gcc49 pkgs.gnumake pkgs.findutils pkgs.rustNightlyWithi686
-        pkgs.cargoNightly
+        pkgs.cargoNightly pkgs.nodejs pkgs.gnutar pkgs.bzip2 pkgs.phantomjs2
       ];
     };
     in [ env ];

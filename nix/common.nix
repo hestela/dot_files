@@ -1,8 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  # Use gummiboot
-  boot.loader.gummiboot.enable = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];

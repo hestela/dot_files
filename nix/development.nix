@@ -8,26 +8,21 @@
     };
 
     systemPackages = with pkgs; [
-      awscli                             # AWS command line interface
       bundler
-      bundix                             # Structured Ruby package manager
-      cargoUnstable                      # Rust package manager
       git                                # Git source control
       go
+      go2nix
       fzf
       godep
       imagemagick                        # Image manip library
       ngrok
+      npm2nix
       nix-repl                           # Repl for nix package manager
-      nodejs-5_x                         # Node.js event driven JS framework
       python27                           # Python programming language
       python27Packages.pip               # Python package manager
       python27Packages.virtualenv
       rustNightlyWithi686
       elixir
-      ruby                               # Ruby programming language
-      rubygems                           # Ad hoc Ruby package manager
-      samba                              # Netbios
       silver-searcher                    # Code searching tool
       sqlite                             # sqlite database
       which                              # Dependency for fzf.vim
