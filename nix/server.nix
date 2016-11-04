@@ -34,6 +34,7 @@ in
     path = with pkgs; [
       git
       sqlite
+      openssh
     ];
     description = "Gogs (Go Git Service)";
     wantedBy = [ "multi-user.target" ];
