@@ -43,11 +43,12 @@ in
     environment.USER = "gogs";
     # Copy gogs and requried files out of /nix/store
     preStart = ''
-      #rm -f /var/lib/gogs/gogs
-      #rm -rf /var/lib/gogs/templates
-      #rm -rf /var/lib/gogs/public
-      cp -r ${gogspkg}/bin/* /var/lib/gogs/
-      chown -R gogs:gogs /var/lib/gogs/
+      # hax
+      test -f /var/lib/gogs/skip-copy || {
+        touch /var/lib/gogs/skip-copy
+        cp -r ${gogspkg}/bin/* /var/lib/gogs/
+        chown -R gogs:gogs /var/lib/gogs/
+      }
       mkdir -p /var/spool/gogs/
       chown -R gogs:gogs /var/spool/gogs/
     '';
