@@ -35,6 +35,7 @@ in
       git
       sqlite
       openssh
+      bash
     ];
     description = "Gogs (Go Git Service)";
     wantedBy = [ "multi-user.target" ];
