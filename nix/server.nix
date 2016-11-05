@@ -1,9 +1,13 @@
 { config, pkgs, ... }:
 
+let
+  gogspkg = import ./pkgs/gogs/default.nix;
+in
 {
   environment.systemPackages = with pkgs; [
     jenkins
     phantomjs2
+    (import ./pkgs/gogs/default.nix)
   ];
 
   nixpkgs.config.packageOverrides = pkgs: rec {
@@ -13,6 +17,51 @@
         sha256 = "0x59dbvh6y25ki5jy51djbfbhf8g2j3yd9f3n66f7bkdfw8p78g1";
       };
     });
+  };
+
+  users.extraGroups.gogs = {
+    name = "gogs";
+  };
+
+  users.extraUsers.gogs = {
+    isNormalUser = true;
+    home = "/var/lib/gogs";
+    extraGroups = ["gogs"];
+    useDefaultShell = true;
+  };
+
+  systemd.services.gogs = {
+    path = with pkgs; [
+      git
+      sqlite
+      openssh
+      bash
+    ];
+    description = "Gogs (Go Git Service)";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "syslog.target" "network.target" ];
+    script =''/var/lib/gogs/gogs web'';
+    environment.HOME = "/var/lib/gogs";
+    environment.USER = "gogs";
+    # Copy gogs and requried files out of /nix/store
+    preStart = ''
+      # hax
+      test -f /var/lib/gogs/skip-copy || {
+        touch /var/lib/gogs/skip-copy
+        cp -r ${gogspkg}/bin/* /var/lib/gogs/
+        chown -R gogs:gogs /var/lib/gogs/
+      }
+      mkdir -p /var/spool/gogs/
+      chown -R gogs:gogs /var/spool/gogs/
+    '';
+    serviceConfig = {
+      PermissionsStartOnly = true;
+      Type = "simple";
+      User = "gogs";
+      Group = "gogs";
+      WorkingDirectory="/var/lib/gogs";
+      Restart = "always";
+    };
   };
 
   services.jenkins = {
