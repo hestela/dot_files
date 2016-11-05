@@ -7,6 +7,20 @@
     letsencrypt
   ];
 
+  security.acme.certs."ci.easycashmoney.org" = {
+    email = "admin@easycashmoney.org";
+    webroot = "/var/www/challenges/";
+    user = "nginx";
+    postRun = "systemctl restart nginx.service";
+  };
+
+  security.acme.certs."git.easycashmoney.org" = {
+    email = "admin@easycashmoney.org";
+    webroot = "/var/www/challenges/";
+    user = "nginx";
+    postRun = "systemctl restart nginx.service";
+  };
+
   services.nginx = {
     enable = true;
     config = ''
@@ -19,14 +33,18 @@
             listen 443;
             server_name ci.easycashmoney.org;
 
-            ssl_certificate /etc/letsencrypt/live/ci.easycashmoney.org/fullchain.pem;
-            ssl_certificate_key /etc/letsencrypt/live/ci.easycashmoney.org/privkey.pem;
+            ssl_certificate ${config.security.acme.directory}/ci.easycashmoney.org/fullchain.pem;
+            ssl_certificate_key ${config.security.acme.directory}/ci.easycashmoney.org/key.pem;
 
             ssl on;
             ssl_session_cache  builtin:1000  shared:SSL:10m;
             ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
             ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
             ssl_prefer_server_ciphers on;
+
+            location /.well-known/acme-challenge {
+              root /var/www/challenges;
+            }
 
             location / {
               proxy_set_header        Host $host;
@@ -47,14 +65,18 @@
             listen 443;
             server_name git.easycashmoney.org;
 
-            ssl_certificate /etc/letsencrypt/live/ci.easycashmoney.org/fullchain.pem;
-            ssl_certificate_key /etc/letsencrypt/live/ci.easycashmoney.org/privkey.pem;
+            ssl_certificate ${config.security.acme.directory}/git.easycashmoney.org/fullchain.pem;
+            ssl_certificate_key ${config.security.acme.directory}/git.easycashmoney.org/key.pem;
 
             ssl on;
             ssl_session_cache  builtin:1000  shared:SSL:10m;
             ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
             ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
             ssl_prefer_server_ciphers on;
+
+            location /.well-known/acme-challenge {
+              root /var/www/challenges;
+            }
 
             location / {
               proxy_set_header        Host $host;
