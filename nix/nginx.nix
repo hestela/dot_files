@@ -1,5 +1,14 @@
 { config, pkgs, ... }:
 
+let
+  ssl_opts = ''
+    ssl on;
+    ssl_session_cache  builtin:1000  shared:SSL:10m;
+    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+    ssl_prefer_server_ciphers on;
+  '';
+in
 {
   environment.systemPackages = with pkgs;
   [
@@ -29,18 +38,14 @@
           listen 80;
           return 301 https://$host$request_uri;
         }
+        # jenkins
         server {
             listen 443;
             server_name ci.easycashmoney.org;
 
             ssl_certificate ${config.security.acme.directory}/ci.easycashmoney.org/fullchain.pem;
             ssl_certificate_key ${config.security.acme.directory}/ci.easycashmoney.org/key.pem;
-
-            ssl on;
-            ssl_session_cache  builtin:1000  shared:SSL:10m;
-            ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
-            ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
-            ssl_prefer_server_ciphers on;
+            ${ssl_opts}
 
             location /.well-known/acme-challenge {
               root /var/www/challenges;
@@ -67,12 +72,7 @@
 
             ssl_certificate ${config.security.acme.directory}/git.easycashmoney.org/fullchain.pem;
             ssl_certificate_key ${config.security.acme.directory}/git.easycashmoney.org/key.pem;
-
-            ssl on;
-            ssl_session_cache  builtin:1000  shared:SSL:10m;
-            ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
-            ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
-            ssl_prefer_server_ciphers on;
+            ${ssl_opts}
 
             location /.well-known/acme-challenge {
               root /var/www/challenges;
