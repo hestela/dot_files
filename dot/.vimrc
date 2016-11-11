@@ -41,7 +41,7 @@ Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-scripts/tComment'
-Plugin 'rust-lang/rust.vim'
+Plugin 'wting/rust.vim'
 Plugin 'justinmk/vim-syntax-extra'
 
 call vundle#end()
@@ -219,3 +219,9 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.class,*.d,*.o
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|class|o|d)$'
 "let g:ctrlp_working_path_mode = 'rw'
 autocmd BufRead,BufNewFile *.c,*.h set noexpandtab
+
+" Custom Notes filetype
+au BufNewFile,BufRead *.kek set filetype=notes
+autocmd FileType notes set tw=79
+autocmd FileType notes set spelllang=en
+autocmd FileType notes set spell!
