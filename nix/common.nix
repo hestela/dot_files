@@ -1,11 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  networking.firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
+  boot.loader.grub.enable = true;
+  boot.loader.grub.version = 2;
+  boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
   nixpkgs.config = {
     # Nonfree packages (for nvidia drivers)
@@ -13,22 +11,8 @@
   };
 
   environment.systemPackages = with pkgs; [
-    powertop # See power consumption
-    pavucontrol
-    byzanz
-    ffmpeg-full                        # Video recording/converting/streaming
-    htop                               # System monitor
-    irssi                              # Irc client
-    nix-repl                           # Repl for nix package manager
-    pulseaudioFull                     # Audio
     rxvt_unicode-with-plugins          # Terminal emulator
-    scrot                              # Screenshot capturing
-    sshfsFuse                          # FS over SSH
-    tmux                               # Console multiplexer
-    tree                               # File tree
-    unzip                              # .zip file util
     wget
-    transmission
   ];
 
 
@@ -49,14 +33,12 @@
   users = {
     defaultUserShell = "/run/current-system/sw/bin/bash";
 
-    extraGroups.ssl-cert.gid = 1040;
-
     extraUsers.henry = {
       isNormalUser = true;
       home = "/home/henry";
 
       # Configure for sudo, network, gfx, and docker
-      extraGroups = ["wheel" "networkmanager" "docker" "ssl-cert" "essentials" ];
+      extraGroups = ["wheel" "networkmanager" ];
       uid = 1000;
       shell = "/run/current-system/sw/bin/bash";
     };
