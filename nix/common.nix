@@ -3,7 +3,7 @@
 {
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
-  boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
+  boot.loader.grub.device = "/dev/nvme0n1"; # or "nodev" for efi only
 
   nixpkgs.config = {
     # Nonfree packages (for nvidia drivers)
@@ -33,12 +33,12 @@
   users = {
     defaultUserShell = "/run/current-system/sw/bin/bash";
 
-    extraUsers.henry = {
+    extraUsers.hrestela = {
       isNormalUser = true;
-      home = "/home/henry";
+      home = "/home/hrestela";
 
       # Configure for sudo, network, gfx, and docker
-      extraGroups = ["wheel" "networkmanager" ];
+      extraGroups = ["wheel" "networkmanager" "docker"];
       uid = 1000;
       shell = "/run/current-system/sw/bin/bash";
     };

@@ -1,25 +1,43 @@
 { config, pkgs, ... }:
 
 {
+  services.xserver = {
+    enable = true;
+    layout = "us";
+    desktopManager.kde5.enable = true;
+    desktopManager.default = "kde5";
+    videoDrivers = [ "nvidia" ];
+  };
 
-  services.xserver.enable = true;
-  services.xserver.desktopManager.kde4.enable = true;
-
-  networking = {
-    hostName = "moola";
+  hardware = {
+    opengl.driSupport32Bit = true;
+    pulseaudio.enable = true;
+    pulseaudio.support32Bit = true;
   };
 
   environment = {
-    variables = {
-      EDITOR = "vim";
-    };
-
     systemPackages = with pkgs; [
-      git                                # Git source control
-      python27                           # Python programming language
-      python27Packages.pip               # Python package manager
+      (pidgin-with-plugins.override { plugins = [ pidginsipe ]; })
+      chromium
+      ffmpeg
+      file
+      freerdp
+      git
+      kde5.plasma-workspace-wallpapers
+      libreoffice
+      ncurses
+      netcat-openbsd
+      patchelf
+      pavucontrol
+      pulseaudioFull
+      python27
+      python27Packages.pip
       python27Packages.virtualenv
-      which                              # Dependency for fzf.vim
+      tmux
+      trojita
+      unzip
+      which
+      xscreensaver
     ];
   };
 }
