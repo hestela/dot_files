@@ -23,6 +23,7 @@
       file
       freerdp
       git
+      kde4.ksnapshot
       kde5.plasma-workspace-wallpapers
       libreoffice
       ncurses

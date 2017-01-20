@@ -1,6 +1,41 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
-{
+  # Rust
+  let rustNightlyNixRepo = pkgs.fetchFromGitHub {
+     owner = "solson";
+     repo = "rust-nightly-nix";
+     rev = "9e09d579431940367c1f6de9463944eef66de1d4";
+     sha256 = "03zkjnzd13142yla52aqmgbbnmws7q8kn1l5nqaly22j31f125xy";
+  };
+  rustPackages = pkgs.callPackage rustNightlyNixRepo { };
+  in {
+    nixpkgs.config.packageOverrides = pkgs: rec {
+      gdb = pkgs.gdb.overrideDerivation(oldAttrs:{
+        src = pkgs.fetchurl {
+          url = "mirror://gnu/gdb/gdb-7.12.tar.xz";
+          sha256 = "152g2qa8337cxif3lkvabjcxfd9jphfb2mza8f1p2c4bjk2z6kw3";
+        };
+      });
+    cargoLatest = rustPackages.cargo { date = "2016-10-28"; };
+    rustcLatest = rustPackages.rustcWithSysroots {
+      rustc = rustPackages.rustc {
+        date = "2016-10-28";
+      };
+      sysroots = [
+        (rustPackages.rust-std {
+          date = "2016-10-28";
+        })
+        (rustPackages.rust-std {
+          date = "2016-10-28";
+          system = "asmjs-unknown-emscripten";
+        })
+        (rustPackages.rust-std {
+          date = "2016-10-28";
+          system = "wasm32-unknown-emscripten";
+        })
+      ];
+    };
+  };
 
   environment = {
     variables = {
@@ -8,74 +43,25 @@
     };
 
     systemPackages = with pkgs; [
-      bundler
+      bashCompletion
+      cargoLatest
+      gcc
       git                                # Git source control
+      gnumake
       go
       go2nix
-      fzf
       godep
-      imagemagick                        # Image manip library
-      ngrok
-      npm2nix
-      nix-repl                           # Repl for nix package manager
-      python27                           # Python programming language
-      python27Packages.pip               # Python package manager
+      python27
+      python27Packages.pip
       python27Packages.virtualenv
-      rustNightlyWithi686
-      elixir
-      silver-searcher                    # Code searching tool
-      sqlite                             # sqlite database
-      which                              # Dependency for fzf.vim
+      rustcLatest
+      sqlite
       vimPlugins.YouCompleteMe
-      vim_configurable                   # Text editor
+      vim_configurable
+      which
     ];
   };
 
   # Enable docker contaner svc
   virtualisation.docker.enable = true;
-
-  # Rust nightly
-  nixpkgs.config.packageOverrides = pkgs: rec {
-    rustGetter = pkgs.fetchFromGitHub {
-      owner = "Ericson2314";
-      repo = "nixos-configuration";
-      rev = "ca75f2a08643faf913ab667199ef1b3fe5615618";
-      sha256 = "131hp2zp1i740zqrbgpa57zjczs5clj3q2dmylbnr9cgsqbcyznp";
-    };
-
-    funs = pkgs.callPackage "${rustGetter}/user/.nixpkgs/rust-nightly.nix" { };
-
-    rustDate = "2016-09-13";
-    rustStdDate = "2016-09-13";
-
-    rustcNightly = funs.rustc {
-      date = rustDate;
-      hash = "0a3qmf6wf797zgg7dv76hkzjknhrhrlgln5db8fx60mxas2ck5rn";
-    };
-
-    rustStd = funs.rust-std {
-      date = rustDate;
-      hash = "1ka5kjnhs99wd9jylrg3vqcikhw5vrh9gmlsini8kp4qz5agh817";
-    };
-
-    rustNightlyWithi686 = funs.rustcWithSysroots {
-      rustc = rustcNightly;
-      sysroots = [
-        (funs.rust-std {
-          hash = "1ckqrhqidynfk80l9nzhza945x1c74n6a55ki45zdc02v81259mn";
-          date = rustStdDate;
-        })
-        (funs.rust-std {
-          hash = "10297dpdf3yvzg3bdlg9b3a15sgdrjyj582xq0fyvii0snrsnbkr";
-          date = rustStdDate;
-          system = "i686-linux";
-        })
-      ];
-    };
-
-    cargoNightly = funs.cargo {
-      date = "2016-09-13";
-      hash = "0spw9zgsvncjqi7hf6yn4knvzrq6mnsak3frm104ggizhlnq8gfv";
-    };
-  };
 }
