@@ -9,7 +9,6 @@
       /root/dot_files/nix/development.nix
       /root/dot_files/nix/ip.nix
       /root/dot_files/nix/nginx.nix
-      /root/dot_files/nix/openssh.nix
       /root/dot_files/nix/server.nix
     ];
 }

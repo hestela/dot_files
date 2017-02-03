@@ -13,9 +13,6 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
-
   environment.systemPackages = with pkgs; [
     htop
     jenkins
@@ -109,8 +106,8 @@ in
       paths = [
         pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh pkgs.nix
         pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip pkgs.glibc pkgs.cmake pkgs.clang
-        pkgs.gcc49 pkgs.gnumake pkgs.findutils pkgs.rustNightlyWithi686
-        pkgs.cargoNightly pkgs.nodejs pkgs.gnutar pkgs.bzip2 pkgs.phantomjs2
+        pkgs.gcc49 pkgs.gnumake pkgs.findutils pkgs.rustcLatest
+        pkgs.cargoLatest pkgs.nodejs pkgs.gnutar pkgs.bzip2 pkgs.phantomjs2
       ];
     };
     in [ env ];
@@ -120,6 +117,8 @@ in
   networking = {
     hostName = "quid"; # Define your hostname.
     hostId = "e39841f0";
+    firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
+    firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
   };
 
   services.openssh = {
