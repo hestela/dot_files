@@ -25,8 +25,6 @@
     pulseaudio.support32Bit = true;
   };
 
-  programs.bash.enableCompletion = true;
-
   users = {
     defaultUserShell = "/run/current-system/sw/bin/bash";
 

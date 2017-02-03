@@ -14,4 +14,5 @@
   '';
 
   time.timeZone = "US/Pacific";
+  programs.bash.enableCompletion = true;
 }
