@@ -4,6 +4,11 @@ let
   gogspkg = import ./pkgs/gogs/default.nix;
 in
 {
+  imports =
+    [
+      /root/dot_files/nix/ovpn.nix
+    ];
+
   environment.systemPackages = with pkgs; [
     jenkins
     phantomjs2

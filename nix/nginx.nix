@@ -55,7 +55,7 @@ in
             server_name ci.easycashmoney.org;
 
             ssl_certificate ${config.security.acme.directory}/ci.easycashmoney.org/fullchain.pem;
-            ssl_certificate_key ${config.security.acme.directory}/ci.easycashmoney.org/key.pem;
+            ssl_certificate_key ${config.security.acme.directory}/ci.easycashmoney.org/privkey.pem;
             ${ssl_opts}
 
             location /.well-known/acme-challenge {
@@ -82,7 +82,7 @@ in
             server_name git.easycashmoney.org;
 
             ssl_certificate ${config.security.acme.directory}/git.easycashmoney.org/fullchain.pem;
-            ssl_certificate_key ${config.security.acme.directory}/git.easycashmoney.org/key.pem;
+            ssl_certificate_key ${config.security.acme.directory}/git.easycashmoney.org/privkey.pem;
             ${ssl_opts}
 
             location /.well-known/acme-challenge {
