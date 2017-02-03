@@ -5,13 +5,22 @@ let
 in
 {
   imports =
-    [
-      /root/dot_files/nix/ovpn.nix
-    ];
+  [
+    ./ovpn.nix
+  ];
+
+  # Using UEFI boot
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
+    htop
     jenkins
     phantomjs2
+    tmux
+    tree
+    unzip
+    wget
     (import ./pkgs/gogs/default.nix)
   ];
 
@@ -24,15 +33,30 @@ in
     });
   };
 
-  users.extraGroups.gogs = {
-    name = "gogs";
-  };
+  users = {
+    defaultUserShell = "/run/current-system/sw/bin/bash";
+    extraGroups.ssl-cert.gid = 1040;
 
-  users.extraUsers.gogs = {
-    isNormalUser = true;
-    home = "/var/lib/gogs";
-    extraGroups = ["gogs"];
-    useDefaultShell = true;
+    extraUsers.henry = {
+      isNormalUser = true;
+      home = "/home/henry";
+
+      # Configure for sudo, network, gfx, and docker
+      extraGroups = ["wheel" "networkmanager" "docker" "ssl-cert" "essentials" ];
+      uid = 1000;
+      shell = "/run/current-system/sw/bin/bash";
+    };
+
+    extraGroups.gogs = {
+      name = "gogs";
+    };
+
+    extraUsers.gogs = {
+      isNormalUser = true;
+      home = "/var/lib/gogs";
+      extraGroups = ["gogs"];
+      useDefaultShell = true;
+    };
   };
 
   systemd.services.gogs = {
@@ -82,8 +106,8 @@ in
       paths = [
         pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh pkgs.nix
         pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip pkgs.glibc pkgs.cmake pkgs.clang
-        pkgs.gcc49 pkgs.gnumake pkgs.findutils pkgs.rustNightlyWithi686
-        pkgs.cargoNightly pkgs.nodejs pkgs.gnutar pkgs.bzip2 pkgs.phantomjs2
+        pkgs.gcc49 pkgs.gnumake pkgs.findutils pkgs.rustcLatest
+        pkgs.cargoLatest pkgs.nodejs pkgs.gnutar pkgs.bzip2 pkgs.phantomjs2
       ];
     };
     in [ env ];
@@ -93,6 +117,8 @@ in
   networking = {
     hostName = "quid"; # Define your hostname.
     hostId = "e39841f0";
+    firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
+    firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
   };
 
   services.openssh = {
