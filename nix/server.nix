@@ -5,13 +5,25 @@ let
 in
 {
   imports =
-    [
-      /root/dot_files/nix/ovpn.nix
-    ];
+  [
+    ./ovpn.nix
+  ];
+
+  # Using UEFI boot
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  networking.firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
+  networking.firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
 
   environment.systemPackages = with pkgs; [
+    htop
     jenkins
     phantomjs2
+    tmux
+    tree
+    unzip
+    wget
     (import ./pkgs/gogs/default.nix)
   ];
 
@@ -24,15 +36,30 @@ in
     });
   };
 
-  users.extraGroups.gogs = {
-    name = "gogs";
-  };
+  users = {
+    defaultUserShell = "/run/current-system/sw/bin/bash";
+    extraGroups.ssl-cert.gid = 1040;
 
-  users.extraUsers.gogs = {
-    isNormalUser = true;
-    home = "/var/lib/gogs";
-    extraGroups = ["gogs"];
-    useDefaultShell = true;
+    extraUsers.henry = {
+      isNormalUser = true;
+      home = "/home/henry";
+
+      # Configure for sudo, network, gfx, and docker
+      extraGroups = ["wheel" "networkmanager" "docker" "ssl-cert" "essentials" ];
+      uid = 1000;
+      shell = "/run/current-system/sw/bin/bash";
+    };
+
+    extraGroups.gogs = {
+      name = "gogs";
+    };
+
+    extraUsers.gogs = {
+      isNormalUser = true;
+      home = "/var/lib/gogs";
+      extraGroups = ["gogs"];
+      useDefaultShell = true;
+    };
   };
 
   systemd.services.gogs = {

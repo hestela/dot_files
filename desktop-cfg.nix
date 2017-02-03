@@ -9,5 +9,7 @@
       /root/dot_files/nix/desktop.nix
       /root/dot_files/nix/development.nix
       /root/dot_files/nix/openssh.nix
+      # Intentionally left out of git
+      /root/dot_files/nix/work.nix
     ];
 }
