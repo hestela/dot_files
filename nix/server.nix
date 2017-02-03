@@ -1,8 +1,5 @@
-{ config, pkgs, ... }:
+{ config, pkgs ? import <nixpkgs> {}, ... }:
 
-let
-  gogspkg = import ./pkgs/gogs/default.nix;
-in
 {
   imports =
     [
@@ -12,10 +9,11 @@ in
   environment.systemPackages = with pkgs; [
     jenkins
     phantomjs2
-    (import ./pkgs/gogs/default.nix)
+    gogs
   ];
 
   nixpkgs.config.packageOverrides = pkgs: rec {
+    gogs = pkgs.callPackage ./pkgs/gogs {};
     jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
       src = pkgs.fetchurl {
         url = "http://mirrors.jenkins-ci.org/war/2.3/jenkins.war";
@@ -24,50 +22,6 @@ in
     });
   };
 
-  users.extraGroups.gogs = {
-    name = "gogs";
-  };
-
-  users.extraUsers.gogs = {
-    isNormalUser = true;
-    home = "/var/lib/gogs";
-    extraGroups = ["gogs"];
-    useDefaultShell = true;
-  };
-
-  systemd.services.gogs = {
-    path = with pkgs; [
-      git
-      sqlite
-      openssh
-      bash
-    ];
-    description = "Gogs (Go Git Service)";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "syslog.target" "network.target" ];
-    script =''/var/lib/gogs/gogs web'';
-    environment.HOME = "/var/lib/gogs";
-    environment.USER = "gogs";
-    # Copy gogs and requried files out of /nix/store
-    preStart = ''
-      # hax
-      test -f /var/lib/gogs/skip-copy || {
-        touch /var/lib/gogs/skip-copy
-        cp -r ${gogspkg}/bin/* /var/lib/gogs/
-        chown -R gogs:gogs /var/lib/gogs/
-      }
-      mkdir -p /var/spool/gogs/
-      chown -R gogs:gogs /var/spool/gogs/
-    '';
-    serviceConfig = {
-      PermissionsStartOnly = true;
-      Type = "simple";
-      User = "gogs";
-      Group = "gogs";
-      WorkingDirectory="/var/lib/gogs";
-      Restart = "always";
-    };
-  };
 
   services.jenkins = {
     enable = true;
