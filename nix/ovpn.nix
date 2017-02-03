@@ -21,7 +21,7 @@
   services = {
     openvpn = {
       servers = {
-        for-phone = {
+        no-lan = {
           config = ''
             dev tun1
             server 10.8.0.0 255.255.255.0
