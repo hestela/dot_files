@@ -7,6 +7,7 @@ in
   imports =
   [
     ./ovpn.nix
+    ./openhab.nix
   ];
 
   # Using UEFI boot
@@ -117,8 +118,8 @@ in
   networking = {
     hostName = "quid"; # Define your hostname.
     hostId = "e39841f0";
-    firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 ];
-    firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 ];
+    firewall.allowedTCPPorts = [ 80 443 3000 8888 42063 8000 8080 ];
+    firewall.allowedUDPPorts = [ 80 443 3000 8888 42063 8000 8080 ];
   };
 
   services.openssh = {

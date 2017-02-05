@@ -1,0 +1,39 @@
+{ config, pkgs, ... }:
+
+{
+  users.extraUsers.openhab = {
+    isNormalUser = true;
+    home = "/home/openhab";
+    extraGroups = [ "openhab" ];
+  };
+
+  users.extraGroups.openhab = {
+    name = "openhab";
+  };
+
+  # Default port is 8080
+  systemd.services.openhab = {
+    path = with pkgs; [
+      jre
+      bash
+      gawk
+    ];
+    description = "The openHAB 2 Home Automation Bus Solution";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "syslog.target" "network.target" ];
+    environment.HOME = "/home/openhab";
+    environment.USER = "openhab";
+    # TODO: fix manual unpack of zip to home
+    serviceConfig = {
+      PermissionsStartOnly = true;
+      Type = "simple";
+      User = "openhab";
+      Group = "openhab";
+      GuessMainPID = "yes";
+      WorkingDirectory = "/home/openhab";
+      Restart = "always";
+      ExecStart = "/home/openhab/start.sh server";
+      ExecStop = "kill -SIGINT $MAINPID";
+    };
+  };
+}

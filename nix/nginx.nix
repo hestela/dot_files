@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 let
+  ssl_dir = ''/etc/letsencrypt/live/'';
   ssl_opts = ''
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;
@@ -27,20 +28,6 @@ in
     letsencrypt
   ];
 
-  security.acme.certs."ci.easycashmoney.org" = {
-    email = "admin@easycashmoney.org";
-    webroot = "/var/www/challenges/";
-    user = "nginx";
-    postRun = "systemctl restart nginx.service";
-  };
-
-  security.acme.certs."git.easycashmoney.org" = {
-    email = "admin@easycashmoney.org";
-    webroot = "/var/www/challenges/";
-    user = "nginx";
-    postRun = "systemctl restart nginx.service";
-  };
-
   services.nginx = {
     enable = true;
     config = ''
@@ -54,8 +41,8 @@ in
             listen 443;
             server_name ci.easycashmoney.org;
 
-            ssl_certificate ${config.security.acme.directory}/ci.easycashmoney.org/fullchain.pem;
-            ssl_certificate_key ${config.security.acme.directory}/ci.easycashmoney.org/privkey.pem;
+            ssl_certificate ${ssl_dir}/ci.easycashmoney.org/fullchain.pem;
+            ssl_certificate_key ${ssl_dir}/ci.easycashmoney.org/privkey.pem;
             ${ssl_opts}
 
             location /.well-known/acme-challenge {
@@ -81,8 +68,8 @@ in
             listen 443;
             server_name git.easycashmoney.org;
 
-            ssl_certificate ${config.security.acme.directory}/git.easycashmoney.org/fullchain.pem;
-            ssl_certificate_key ${config.security.acme.directory}/git.easycashmoney.org/privkey.pem;
+            ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
+            ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
             ${ssl_opts}
 
             location /.well-known/acme-challenge {
@@ -100,6 +87,35 @@ in
               proxy_read_timeout  90;
 
               proxy_redirect      http://localhost:3000 https://git.easycashmoney.org;
+              chunked_transfer_encoding off;
+            }
+        }
+        # OpenHab 2
+        server {
+            listen 443;
+            server_name oh2.easycashmoney.org;
+            auth_basic "OpenHab2";
+            auth_basic_user_file /var/www/.htpasswd;
+
+            ssl_certificate ${ssl_dir}/oh2.easycashmoney.org/fullchain.pem;
+            ssl_certificate_key ${ssl_dir}/oh2.easycashmoney.org/privkey.pem;
+            ${ssl_opts}
+
+            location /.well-known/acme-challenge {
+              root /var/www/challenges;
+            }
+
+            location / {
+              proxy_set_header        Host $host;
+              proxy_set_header        X-Real-IP $remote_addr;
+              proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header        X-Forwarded-Proto $scheme;
+
+              # Fix the “It appears that your reverse proxy set up is broken" error.
+              proxy_pass          http://localhost:8080;
+              proxy_read_timeout  90;
+
+              proxy_redirect      http://localhost:8080 https://oh2.easycashmoney.org;
               chunked_transfer_encoding off;
             }
         }
