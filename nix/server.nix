@@ -6,8 +6,8 @@ in
 {
   imports =
   [
-    ./ovpn.nix
-    ./openhab.nix
+    ./services/ovpn.nix
+    ./services/openhab.nix
     ./services/mosquitto.nix
   ];
 
