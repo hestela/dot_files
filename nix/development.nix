@@ -51,7 +51,6 @@
       go
       go2nix
       godep
-      jre
       python27
       python27Packages.pip
       python27Packages.virtualenv
