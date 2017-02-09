@@ -25,15 +25,12 @@
     environment.USER = "openhab";
     # TODO: fix manual unpack of zip to home
     serviceConfig = {
-      PermissionsStartOnly = true;
       Type = "simple";
       User = "openhab";
       Group = "openhab";
-      GuessMainPID = "yes";
       WorkingDirectory = "/home/openhab";
       Restart = "always";
       ExecStart = "/home/openhab/start.sh server";
-      ExecStop = "kill -SIGINT $MAINPID";
     };
   };
 }
