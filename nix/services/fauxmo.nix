@@ -9,7 +9,7 @@ in
       python35
      (import ../pkgs/fauxmo.nix)
     ];
-    description = "Create fake WeMo smart outlets for echo to see";
+    description = "Create fake WeMo smart outlets for Amazon Echo to see";
     wantedBy = [ "multi-user.target" ];
     after = [ "syslog.target" "network.target" ];
     environment.USER = "root";
