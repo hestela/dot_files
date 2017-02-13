@@ -119,8 +119,8 @@ in
   networking = {
     hostName = "quid"; # Define your hostname.
     hostId = "e39841f0";
-    firewall.allowedTCPPorts = [ 80 443 1883 3000 42063 8000 8080 52002 52003 1900 ];
-    firewall.allowedUDPPorts = [ 80 443 1883 3000 42063 8000 8080 52002 52003 1900 ];
+    firewall.allowedTCPPorts = [ 80 443 3000 42063 8000 8080 52002 52003 ];
+    firewall.allowedUDPPorts = [ 80 443 3000 42063 8000 8080 1900 ];
   };
 
   services.openssh = {
