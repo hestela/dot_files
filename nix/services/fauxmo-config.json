@@ -1,0 +1,31 @@
+{
+    "FAUXMO": {
+        "ip_address": "auto"
+    },
+    "DEVICES": [
+        {
+            "port": 52002,
+            "handler": {
+                "on_cmd":  "http://localhost:8080/rest/items/Lights",
+                "off_cmd": "http://localhost:8080/rest/items/Lights",
+                "method": "POST",
+                "headers": {"Content-type": "text/plain"},
+                "on_data": "ON",
+                "off_data": "OFF"
+            },
+            "description": "All Lights"
+        },
+        {
+            "port": 52003,
+            "handler": {
+                "on_cmd":  "http://localhost:8080/rest/items/Hue_lamp1_switch",
+                "off_cmd": "http://localhost:8080/rest/items/Hue_lamp1_switch",
+                "method": "POST",
+                "headers": {"Content-type": "text/plain"},
+                "on_data": "ON",
+                "off_data": "OFF"
+            },
+            "description": "Desk"
+        }
+    ]
+}

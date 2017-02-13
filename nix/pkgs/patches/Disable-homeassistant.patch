@@ -1,0 +1,63 @@
+From a2bfaeb44b2d8a7efdecadb799951e8b587df208 Mon Sep 17 00:00:00 2001
+From: Henry Estela <henryestela@gmail.com>
+Date: Sun, 12 Feb 2017 21:47:59 -0800
+Subject: [PATCH] Disable homeassistant
+
+---
+ requirements.txt     |  2 --
+ src/fauxmo/fauxmo.py | 25 -------------------------
+ 2 files changed, 27 deletions(-)
+
+diff --git a/requirements.txt b/requirements.txt
+index 50495c4..e69de29 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,2 +0,0 @@
+-homeassistant==0.10.1
+-requests==2.9.1
+diff --git a/src/fauxmo/fauxmo.py b/src/fauxmo/fauxmo.py
+index 88ba4a4..854fb63 100644
+--- a/src/fauxmo/fauxmo.py
++++ b/src/fauxmo/fauxmo.py
+@@ -14,7 +14,6 @@ import socket
+ import sys
+ 
+ from fauxmo import logger
+-from fauxmo.handlers.hass import HassAPIHandler
+ from fauxmo.handlers.rest import RESTAPIHandler
+ from fauxmo.protocols import SSDPServer, Fauxmo
+ from fauxmo.utils import get_local_ip
+@@ -80,30 +79,6 @@ def main(config_path=None, verbosity=20):
+ 
+         logger.debug(fauxmo.keywords)
+ 
+-    # Initialize Home Assistant devices if config exists and enable is True
+-    if config.get("HOMEASSISTANT", {}).get("enable") is True:
+-        hass_config = config.get("HOMEASSISTANT")
+-
+-        hass_host = hass_config.get("host")
+-        hass_password = hass_config.get("password")
+-        hass_port = hass_config.get("port")
+-
+-        for device in hass_config.get('DEVICES'):
+-            name = device.get('description')
+-            device_port = device.get("port")
+-            entity = device.get("entity_id")
+-            action_handler = HassAPIHandler(host=hass_host,
+-                                            password=hass_password,
+-                                            entity=entity, port=hass_port)
+-            fauxmo = partial(Fauxmo, name=name, action_handler=action_handler)
+-            coro = loop.create_server(fauxmo, host=fauxmo_ip, port=device_port)
+-            server = loop.run_until_complete(coro)
+-            servers.append(server)
+-
+-            ssdp_server.add_device(name, fauxmo_ip, device_port)
+-
+-            logger.debug(fauxmo.keywords)
+-
+     logger.info("Starting UDP server")
+ 
+     listen = loop.create_datagram_endpoint(lambda: ssdp_server,
+-- 
+2.7.4
+

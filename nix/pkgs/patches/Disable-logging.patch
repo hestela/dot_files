@@ -1,0 +1,25 @@
+From fa9ec5608e24d518eac10851bb580d1c781040d7 Mon Sep 17 00:00:00 2001
+From: Henry Estela <henryestela@gmail.com>
+Date: Sun, 12 Feb 2017 21:52:04 -0800
+Subject: [PATCH] Disable logging
+
+---
+ src/fauxmo/fauxmo.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/fauxmo/fauxmo.py b/src/fauxmo/fauxmo.py
+index 854fb63..bc81eb0 100644
+--- a/src/fauxmo/fauxmo.py
++++ b/src/fauxmo/fauxmo.py
+@@ -62,7 +62,7 @@ def main(config_path=None, verbosity=20):
+ 
+     loop = asyncio.new_event_loop()
+     asyncio.set_event_loop(loop)
+-    loop.set_debug(True)
++    loop.set_debug(False)
+ 
+     # Initialize Fauxmo devices
+     for device in config.get('DEVICES'):
+-- 
+2.7.4
+
