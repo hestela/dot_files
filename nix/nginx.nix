@@ -20,6 +20,22 @@ let
     add_header X-Content-Type-Options nosniff;
     ssl_dhparam /etc/ssl/certs/dhparam.pem;
   '';
+
+  listen_opts = ''
+    listen 443;
+    location /.well-known/acme-challenge {
+      root /var/www/challenges;
+    }
+  '';
+
+  location_opts = ''
+    proxy_set_header        Host $host;
+    proxy_set_header        X-Real-IP $remote_addr;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header        X-Forwarded-Proto $scheme;
+    proxy_read_timeout  90;
+    chunked_transfer_encoding off;
+  '';
 in
 {
   environment.systemPackages = with pkgs;
@@ -38,61 +54,36 @@ in
         }
         # jenkins
         server {
-            listen 443;
             server_name ci.easycashmoney.org;
 
             ssl_certificate ${ssl_dir}/ci.easycashmoney.org/fullchain.pem;
             ssl_certificate_key ${ssl_dir}/ci.easycashmoney.org/privkey.pem;
             ${ssl_opts}
-
-            location /.well-known/acme-challenge {
-              root /var/www/challenges;
-            }
+            ${listen_opts}
 
             location / {
-              proxy_set_header        Host $host;
-              proxy_set_header        X-Real-IP $remote_addr;
-              proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header        X-Forwarded-Proto $scheme;
-
-              # Fix the “It appears that your reverse proxy set up is broken" error.
               proxy_pass          http://localhost:8000;
-              proxy_read_timeout  90;
-
               proxy_redirect      http://localhost:8000 https://ci.easycashmoney.org;
-              chunked_transfer_encoding off;
+              ${location_opts}
             }
         }
         # gogs
         server {
-            listen 443;
             server_name git.easycashmoney.org;
 
             ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
             ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
             ${ssl_opts}
-
-            location /.well-known/acme-challenge {
-              root /var/www/challenges;
-            }
+            ${listen_opts}
 
             location / {
-              proxy_set_header        Host $host;
-              proxy_set_header        X-Real-IP $remote_addr;
-              proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header        X-Forwarded-Proto $scheme;
-
-              # Fix the “It appears that your reverse proxy set up is broken" error.
               proxy_pass          http://localhost:3000;
-              proxy_read_timeout  90;
-
               proxy_redirect      http://localhost:3000 https://git.easycashmoney.org;
-              chunked_transfer_encoding off;
+              ${location_opts}
             }
         }
         # OpenHab 2
         server {
-            listen 443;
             server_name oh2.easycashmoney.org;
             auth_basic "OpenHab2";
             auth_basic_user_file /var/www/.htpasswd;
@@ -100,23 +91,12 @@ in
             ssl_certificate ${ssl_dir}/oh2.easycashmoney.org/fullchain.pem;
             ssl_certificate_key ${ssl_dir}/oh2.easycashmoney.org/privkey.pem;
             ${ssl_opts}
-
-            location /.well-known/acme-challenge {
-              root /var/www/challenges;
-            }
+            ${listen_opts}
 
             location / {
-              proxy_set_header        Host $host;
-              proxy_set_header        X-Real-IP $remote_addr;
-              proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header        X-Forwarded-Proto $scheme;
-
-              # Fix the “It appears that your reverse proxy set up is broken" error.
               proxy_pass          http://localhost:8080;
-              proxy_read_timeout  90;
-
               proxy_redirect      http://localhost:8080 https://oh2.easycashmoney.org;
-              chunked_transfer_encoding off;
+              ${location_opts}
             }
         }
       }
