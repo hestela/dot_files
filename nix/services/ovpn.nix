@@ -9,12 +9,12 @@
     firewall = {
       enable = true;
       extraCommands = ''
-        iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eno1 -j MASQUERADE
+        iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to 192.168.0.111
       '';
       extraStopCommands = ''
-        iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -o eno1 -j MASQUERADE
+        iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -j SNAT --to 192.168.0.111
       '';
-      allowedUDPPorts = [ 1195 ]; # openvpn
+      allowedUDPPorts = [ 8080 ]; # openvpn
       trustedInterfaces = [ "tun1" ];
     };
   };
@@ -25,7 +25,7 @@
           config = ''
             dev tun1
             server 10.8.0.0 255.255.255.0
-            port 1195
+            port 8080
             comp-lzo
             ca /root/easy-rsa/easyrsa3/pki/ca.crt
             cert /root/easy-rsa/easyrsa3/pki/issued/no-pass.crt
@@ -33,8 +33,11 @@
             dh /root/easy-rsa/easyrsa3/pki/dh.pem
             tls-auth /root/ta.key 0
             tls-server
-            push "redirect-gateway local def1"
+            push "redirect-gateway local def1 bypass-dhcp"
             push "dhcp-option DNS 8.8.8.8"
+            push "route 192.168.0.0 255.255.255.0"
+            push "route 10.8.0.0 255.255.255.0"
+            client-to-client
           '';
         };
       };
