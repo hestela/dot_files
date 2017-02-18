@@ -29,8 +29,8 @@ in
   nixpkgs.config.packageOverrides = pkgs: rec {
     jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
       src = pkgs.fetchurl {
-        url = "http://mirrors.jenkins-ci.org/war/2.3/jenkins.war";
-        sha256 = "0x59dbvh6y25ki5jy51djbfbhf8g2j3yd9f3n66f7bkdfw8p78g1";
+        url = "http://updates.jenkins-ci.org/download/war/2.46/jenkins.war";
+        sha256 = "0d41vpiawj1c128ayhn0p1pim5dmh75lpdzsfskfmm9qwan8isvx";
       };
     });
   };
