@@ -33,41 +33,62 @@
       home = "/home/hrestela";
 
       # Configure for sudo, network, gfx, and docker
-      extraGroups = ["wheel" "networkmanager" "docker"];
-      uid = 1000;
+      extraGroups = ["wheel" "networkmanager" "docker" "user" "fabdev"];
       shell = "/run/current-system/sw/bin/bash";
     };
   };
 
+  networking = {
+    networkmanager.enable = true;
+  };
+
   environment = {
     systemPackages = with pkgs; [
+      (curl.override { gssSupport = true; })
       (pidgin-with-plugins.override { plugins = [ pidginsipe ]; })
+      bind
       chromium
       clementine
-      bind
+      davmail
       ffmpeg
       file
       freerdp
       git
-      kde4.ksnapshot
-      kde5.plasma-workspace-wallpapers
-      libreoffice
+      git-review
+      gnumake380
+      gnutls
+      gparted
+      gss
       irssi
+      jre
+      kde4.ksnapshot
+      kde4.ksnapshot
+      kde5.plasma-nm
+      kde5.plasma-workspace-wallpapers
+      krb5Full
+      libreoffice
       ncurses
       netcat-openbsd
+      ntp
+      openssl
       patchelf
       pavucontrol
+      pciutils
       pulseaudioFull
       python27
       python27Packages.pip
       python27Packages.redNotebook
       python27Packages.virtualenv
+      python34
+      python35Packages.flake8
       tmux
       trojita
       unzip
-      which
       wget
+      which
+      xmlstarlet
       xscreensaver
+      zlib
     ];
   };
 }
