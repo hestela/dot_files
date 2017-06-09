@@ -16,7 +16,10 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = with pkgs; [
+    jre
+    maven
     htop
+    iperf2
     jenkins
     phantomjs2
     tmux
@@ -119,8 +122,8 @@ in
   networking = {
     hostName = "quid"; # Define your hostname.
     hostId = "e39841f0";
-    firewall.allowedTCPPorts = [ 80 443 3000 42063 8000 8080 52002 52003 ];
-    firewall.allowedUDPPorts = [ 80 443 3000 42063 8000 8080 1900 ];
+    firewall.allowedTCPPorts = [ 80 443 3000 42063 8080 8443 7080 1111 ];
+    firewall.allowedUDPPorts = [ 80 443 3000 42063 8080 1900 ];
   };
 
   services.openssh = {
