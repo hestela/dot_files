@@ -26,6 +26,30 @@
                 "off_data": "OFF"
             },
             "description": "Desk"
+        },
+        {
+            "port": 52004,
+            "handler": {
+                "on_cmd":  "http://192.168.2.138:3000/macros/Projector_On",
+                "off_cmd":  "http://192.168.2.138:3000/macros/Projector_Off",
+                "method": "POST",
+                "headers": {"Content-type": "text/plain"},
+                "on_data": "",
+                "off_data": ""
+            },
+            "description": "Projector"
+        },
+        {
+            "port": 52005,
+            "handler": {
+                "on_cmd":   "http://192.168.2.138:3000/remotes/KENWOOD_1080VR/KEY_POWER",
+                "off_cmd":  "http://192.168.2.138:3000/remotes/KENWOOD_1080VR/KEY_POWER",
+                "method": "POST",
+                "headers": {"Content-type": "text/plain"},
+                "on_data": "",
+                "off_data": ""
+            },
+            "description": "Receiver"
         }
     ]
 }
