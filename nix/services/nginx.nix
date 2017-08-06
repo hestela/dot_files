@@ -18,6 +18,7 @@ let
     add_header X-Frame-Options DENY;
     add_header X-Content-Type-Options nosniff;
   '';
+
   ssl_dir = ''/etc/letsencrypt/live'';
 
   localhostReverseProxy = {url, port}:

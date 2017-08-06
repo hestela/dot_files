@@ -15,4 +15,9 @@
 
   time.timeZone = "US/Pacific";
   programs.bash.enableCompletion = true;
+
+  # Use network manager for networking
+  networking.networkmanager.enable = false;
+  networking.enableIPv6 = false;
+  networking.nameservers = [ "8.8.8.8" ];
 }

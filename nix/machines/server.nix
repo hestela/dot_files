@@ -1,19 +1,18 @@
 { config, pkgs, ... }:
 
-let
-  gogspkg = import ./pkgs/gogs/default.nix;
-in
 {
   imports =
   [
-    ./services/ovpn.nix
-    ./services/openhab.nix
-    ./services/fauxmo.nix
+    ../services/ovpn.nix
+    ../services/openhab.nix
+    ../services/fauxmo.nix
+    ../services/radicale.nix
   ];
 
   # Using UEFI boot
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  services.avahi.enable = true;
 
   environment.systemPackages = with pkgs; [
     jre
@@ -26,7 +25,6 @@ in
     tree
     unzip
     wget
-    (import ./pkgs/gogs/default.nix)
   ];
 
   nixpkgs.config.packageOverrides = pkgs: rec {
@@ -77,17 +75,6 @@ in
     script =''/var/lib/gogs/gogs web'';
     environment.HOME = "/var/lib/gogs";
     environment.USER = "gogs";
-    # Copy gogs and requried files out of /nix/store
-    preStart = ''
-      # hax
-      test -f /var/lib/gogs/skip-copy || {
-        touch /var/lib/gogs/skip-copy
-        cp -r ${gogspkg}/bin/* /var/lib/gogs/
-        chown -R gogs:gogs /var/lib/gogs/
-      }
-      mkdir -p /var/spool/gogs/
-      chown -R gogs:gogs /var/spool/gogs/
-    '';
     serviceConfig = {
       PermissionsStartOnly = true;
       Type = "simple";
@@ -120,10 +107,11 @@ in
   systemd.services.jenkins.serviceConfig.ExecStartPost = pkgs.lib.mkForce "";
 
   networking = {
-    hostName = "quid"; # Define your hostname.
+    hostName = "quid";
     hostId = "e39841f0";
     firewall.allowedTCPPorts = [ 80 443 3000 42063 8080 8443 7080 1111 ];
     firewall.allowedUDPPorts = [ 80 443 3000 42063 8080 1900 ];
+    interfaces.eno1.useDHCP = true;
   };
 
   services.openssh = {

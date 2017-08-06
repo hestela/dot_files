@@ -50,6 +50,18 @@
                 "off_data": ""
             },
             "description": "Receiver"
+        },
+        {
+            "port": 52006,
+            "handler": {
+                "on_cmd":  "http://localhost:7080/rest/items/net_desktop",
+                "off_cmd": "http://localhost:7080/rest/items/net_desktop",
+                "method": "POST",
+                "headers": {"Content-type": "text/plain"},
+                "on_data": "ON",
+                "off_data": "OFF"
+            },
+            "description": "computer"
         }
     ]
 }
