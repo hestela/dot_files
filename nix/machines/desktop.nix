@@ -11,12 +11,28 @@
     allowUnfree = true;
   };
 
+  fonts = {
+    fonts = with pkgs; [
+      ubuntu_font_family
+    ];
+  };
+
+  # No idea why i need this
+  nixpkgs.config.permittedInsecurePackages = [
+    "webkitgtk-2.4.11"
+  ];
+
   services.xserver = {
     enable = true;
     layout = "us";
-    desktopManager.kde5.enable = true;
-    desktopManager.default = "kde5";
+    desktopManager.plasma5.enable = true;
+    desktopManager.default = "plasma5";
     videoDrivers = [ "nvidia" ];
+  };
+
+  services.samba = {
+    enable = true;
+    nsswins = true;
   };
 
   hardware = {
@@ -61,10 +77,8 @@
       gss
       irssi
       jre
-      kde4.ksnapshot
-      kde4.ksnapshot
-      kde5.plasma-nm
-      kde5.plasma-workspace-wallpapers
+      plasma-nm
+      plasma-workspace-wallpapers
       krb5Full
       libreoffice
       ncurses
@@ -89,6 +103,9 @@
       xmlstarlet
       xscreensaver
       zlib
+      gnome3.gnome-calculator
+      ntfs3g
+      hexchat
     ];
   };
 }
