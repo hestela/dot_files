@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 {
   # Using BIOS boot
   boot.loader.grub.enable = true;
@@ -30,6 +29,13 @@
     videoDrivers = [ "nvidia" ];
   };
 
+  # Enable yubikey
+  services.pcscd.enable = true;
+  services.udev.packages = [
+    pkgs.libu2f-host
+    pkgs.yubikey-personalization
+  ];
+
   services.samba = {
     enable = true;
     nsswins = true;
@@ -59,35 +65,48 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = let pkgsUnstable = import
+    (
+      fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz
+    )
+    # Spotify is non-free
+    { config.allowUnfree = true; };
+    in
+    with pkgs; [
       (curl.override { gssSupport = true; })
       (pidgin-with-plugins.override { plugins = [ pidginsipe ]; })
       bind
       chromium
-      clementine
       davmail
       ffmpeg
       file
       freerdp
       git
       git-review
+      gnome3.gnome-calculator
       gnumake380
       gnutls
       gparted
       gss
+      hexchat
       irssi
       jre
-      plasma-nm
-      plasma-workspace-wallpapers
       krb5Full
       libreoffice
+      libu2f-host
       ncurses
       netcat-openbsd
+      ntfs3g
       ntp
       openssl
       patchelf
       pavucontrol
       pciutils
+      pcsctools
+      pkgsUnstable.clementine
+      plasma-nm
+      plasma-workspace-wallpapers
+      psmisc
       pulseaudioFull
       python27
       python27Packages.pip
@@ -100,12 +119,11 @@
       unzip
       wget
       which
+      xclip
       xmlstarlet
       xscreensaver
+      yubikey-personalization
       zlib
-      gnome3.gnome-calculator
-      ntfs3g
-      hexchat
     ];
   };
 }
