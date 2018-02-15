@@ -11,7 +11,7 @@
 
     systemPackages = with pkgs; [
       bashCompletion
-      cargoLatest
+      #cargoLatest
       gcc
       git                                # Git source control
       gnumake
@@ -21,7 +21,7 @@
       python27
       python27Packages.pip
       python27Packages.virtualenv
-      rustcLatest
+      #rustcLatest
       sqlite
       vimPlugins.YouCompleteMe
       vim_configurable

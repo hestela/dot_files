@@ -67,24 +67,34 @@
   environment = {
     systemPackages = let pkgsUnstable = import
     (
-      fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz
+      fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz
+      #fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz
     )
     # Spotify is non-free
-    { config.allowUnfree = true; };
+    {
+      config.allowUnfree = true;
+    };
     in
     with pkgs; [
+      (import ../pkgs/cppclean.nix)
       (curl.override { gssSupport = true; })
       (pidgin-with-plugins.override { plugins = [ pidginsipe ]; })
+      (discord.overrideAttrs (oldAttrs: rec {
+        src = fetchurl {
+          url = "https://dl.discordapp.net/apps/linux/0.0.4/discord-0.0.4.tar.gz";
+          sha256 = "1alw9rkv1vv0s1w33hd9ab1cgj7iqd7ad9kvn1d55gyki28f8qlb";
+        };
+      }))
       bind
       chromium
-      davmail
+      clementine
       ffmpeg
       file
       freerdp
       git
       git-review
       gnome3.gnome-calculator
-      gnumake380
+      gnumake
       gnutls
       gparted
       gss
@@ -92,6 +102,7 @@
       irssi
       jre
       krb5Full
+      ksuperkey
       libreoffice
       libu2f-host
       ncurses
@@ -103,7 +114,6 @@
       pavucontrol
       pciutils
       pcsctools
-      pkgsUnstable.clementine
       plasma-nm
       plasma-workspace-wallpapers
       psmisc
@@ -117,6 +127,7 @@
       tmux
       trojita
       unzip
+      usbutils
       wget
       which
       xclip
