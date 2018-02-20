@@ -49,8 +49,8 @@ filetype plugin indent on
 
 syntax enable
 highlight ExtraWhitespace ctermbg = black
-"set list listchars=tab:»·,trail:·
-set list listchars=tab:▶·,trail:·
+set list listchars=tab:»·,trail:·
+"set list listchars=tab:▶·,trail:·
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
 let g:solarized_degrade=0
@@ -214,11 +214,11 @@ map <Leader>a :call RunAllSpecs()<CR>
 autocmd BufRead,BufNewFile *.rs set filetype=rust
 
 " N3RDTreeIgnore
-let NERDTreeIgnore = ['\.pyc$','\.class$']
+let NERDTreeIgnore = ['\.pyc$','\.class$','\.o$']
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.class,*.d,*.o
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|class|o|d)$'
 "let g:ctrlp_working_path_mode = 'rw'
-autocmd BufRead,BufNewFile *.c,*.h set noexpandtab
+autocmd BufRead,BufNewFile *.c,*.h set noexpandtab filetype=c.doxygen tabstop=4 softtabstop=4 shiftwidth=4
 
 " Custom Notes filetype
 au BufNewFile,BufRead *.kek set filetype=notes
