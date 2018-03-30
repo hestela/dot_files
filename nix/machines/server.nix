@@ -25,13 +25,18 @@
     tree
     unzip
     wget
+    ncurses
+    mongodb-tools
+    libxslt
   ];
+
+  services.mongodb.enable = true;
 
   nixpkgs.config.packageOverrides = pkgs: rec {
     jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
       src = pkgs.fetchurl {
-        url = "http://updates.jenkins-ci.org/download/war/2.46/jenkins.war";
-        sha256 = "0d41vpiawj1c128ayhn0p1pim5dmh75lpdzsfskfmm9qwan8isvx";
+        url = "http://updates.jenkins-ci.org/download/war/2.107.1/jenkins.war";
+        sha256 = "100jnd31v4jjc5wjdbm3mgwfmcnx97vd41fpap7gdl8f3604riyf";
       };
     });
   };
@@ -47,6 +52,15 @@
       # Configure for sudo, network, gfx, and docker
       extraGroups = ["wheel" "networkmanager" "docker" "ssl-cert" "essentials" ];
       uid = 1000;
+      shell = "/run/current-system/sw/bin/bash";
+    };
+
+    extraUsers.neb = {
+      isNormalUser = true;
+      home = "/home/neb";
+
+      extraGroups = ["docker"];
+      uid = 2000;
       shell = "/run/current-system/sw/bin/bash";
     };
 
@@ -96,6 +110,7 @@
       name = "jenkins-env";
       pathsToLink = [ "/bin" ];
       paths = [
+        # Reconsider since docker is working in pipeline
         pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh pkgs.nix
         pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip pkgs.glibc pkgs.cmake pkgs.clang
         pkgs.gcc49 pkgs.gnumake pkgs.findutils pkgs.rustcLatest
@@ -109,8 +124,8 @@
   networking = {
     hostName = "quid";
     hostId = "e39841f0";
-    firewall.allowedTCPPorts = [ 80 443 3000 42063 8080 8443 7080 1111 ];
-    firewall.allowedUDPPorts = [ 80 443 3000 42063 8080 1900 ];
+    firewall.allowedTCPPorts = [ 80 443 9080 3000 42063 8080 8443 7080 1111 ];
+    firewall.allowedUDPPorts = [ 80 443 9080 3000 42063 8080 1900 3478 ];
     interfaces.eno1.useDHCP = true;
   };
 
