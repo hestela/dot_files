@@ -3,22 +3,55 @@
 {
   imports =
   [
+    ../services/gitbucket.nix
   ];
 
   # Using UEFI boot
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  services.avahi.enable = true;
+
   environment.systemPackages = with pkgs; [
-    jre
     htop
-    iperf2
     iperf
+    iperf2
+    jenkins
+    jre
     tmux
     tree
     unzip
     wget
   ];
+
+  nixpkgs.config.packageOverrides = pkgs: rec {
+    jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
+      src = pkgs.fetchurl {
+        url = "http://updates.jenkins-ci.org/download/war/2.107.1/jenkins.war";
+        sha256 = "100jnd31v4jjc5wjdbm3mgwfmcnx97vd41fpap7gdl8f3604riyf";
+      };
+    });
+  };
+
+ # virtualisation.docker.listenOptions = [ "/var/run/docker.sock" "tcp://0.0.0.0:4243" ];
+  virtualisation.docker.extraOptions = "-H tcp://0.0.0.0:4243";
+  services.jenkins = {
+    enable = true;
+    extraGroups = [ "docker" ];
+    port = 8000;
+    packages =
+      let env = pkgs.buildEnv {
+        name = "jenkins-env";
+        pathsToLink = [ "/bin" ];
+        paths = [
+          # TODO: figure out what is needed
+          pkgs.stdenv pkgs.git pkgs.jdk pkgs.openssh
+          pkgs.gzip pkgs.bash pkgs.wget pkgs.unzip
+          pkgs.gnutar pkgs.bzip2 pkgs.gitRepo pkgs.docker
+        ];
+      };
+      in [ env ];
+  };
 
   users = {
     defaultUserShell = "/run/current-system/sw/bin/bash";
@@ -37,8 +70,8 @@
 
   networking = {
     hostName = "dinero";
-    firewall.allowedTCPPorts = [ 80 443 3000 42063 8080 8443 7080 1111 ];
-    firewall.allowedUDPPorts = [ 80 443 3000 42063 8080 1900 ];
+    firewall.allowedTCPPorts = [ 80 443 3000 42063 8080 8443 7080 1111 8000 ];
+    firewall.allowedUDPPorts = [ 80 443 3000 42063 8080 1900 8000 ];
   };
 
   services.openssh = {
