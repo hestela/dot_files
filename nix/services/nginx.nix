@@ -27,8 +27,8 @@ let
       listen 443;
       server_name ${url};
 
-      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
       ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
@@ -57,8 +57,8 @@ let
       listen 443;
       server_name ${url};
 
-      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
       ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
@@ -158,7 +158,7 @@ in
         }
 
         ${localhostReverseProxy { url = "ci.easycashmoney.org"; port = 8000; }}
-        ${localhostReverseProxy { url = "git.easycashmoney.org"; port = 3000; }}
+        ${localhostReverseProxy { url = "git.easycashmoney.org"; port = 1111; }}
         ${unifiProxy { url = "unifi.easycashmoney.org"; port = 8443; }}
 
         #{phpServer { url = "calendar.easycashmoney.org"; dir = "/var/www/agendav-test/web/public"; }}

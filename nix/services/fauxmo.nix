@@ -5,9 +5,10 @@ let
 in
 {
   networking.firewall.allowedTCPPorts = [ 52002 52003 52004 52005 52006 ];
+  networking.firewall.allowedUDPPorts = [ 1900 ];
   systemd.services.fauxmo = {
     path = with pkgs; [
-      python35
+      python36
      (import ../pkgs/fauxmo.nix)
     ];
     description = "Create fake WeMo smart outlets for Amazon Echo to see";

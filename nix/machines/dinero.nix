@@ -3,7 +3,10 @@
 {
   imports =
   [
-    ../services/gitbucket.nix
+    ../services/openhab.nix
+    ../services/fauxmo.nix
+    ../services/nginx.nix
+    ../services/unifi.nix
   ];
 
   # Using UEFI boot
@@ -27,18 +30,18 @@
   nixpkgs.config.packageOverrides = pkgs: rec {
     jenkins = pkgs.jenkins.overrideDerivation( oldAttrs: {
       src = pkgs.fetchurl {
-        url = "http://updates.jenkins-ci.org/download/war/2.107.1/jenkins.war";
-        sha256 = "100jnd31v4jjc5wjdbm3mgwfmcnx97vd41fpap7gdl8f3604riyf";
+        url = "http://updates.jenkins-ci.org/download/war/2.107.2/jenkins.war";
+        sha256 = "1vb7mrsbc1nfkcvpqb8zhsp2yxcnl82dhzd5sba3vsklps2vi6h7";
       };
     });
   };
 
- # virtualisation.docker.listenOptions = [ "/var/run/docker.sock" "tcp://0.0.0.0:4243" ];
   virtualisation.docker.extraOptions = "-H tcp://0.0.0.0:4243";
   services.jenkins = {
     enable = true;
     extraGroups = [ "docker" ];
     port = 8000;
+    home = "/opt/jenkins";
     packages =
       let env = pkgs.buildEnv {
         name = "jenkins-env";
@@ -51,6 +54,29 @@
         ];
       };
       in [ env ];
+  };
+
+  systemd.services.gogs = {
+    path = with pkgs; [
+      git
+      sqlite
+      openssh
+      bash
+    ];
+    description = "Gogs (Go Git Service)";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "syslog.target" "network.target" ];
+    script =''/opt/gogs/gogs web'';
+    environment.HOME = "/opt/gogs";
+    environment.USER = "gogs";
+    serviceConfig = {
+      PermissionsStartOnly = true;
+      Type = "simple";
+      User = "gogs";
+      Group = "gogs";
+      WorkingDirectory="/opt/gogs";
+      Restart = "always";
+    };
   };
 
   users = {
@@ -66,12 +92,22 @@
       uid = 1000;
       shell = "/run/current-system/sw/bin/bash";
     };
+    extraGroups.gogs = {
+      name = "gogs";
+    };
+
+    extraUsers.gogs = {
+      isNormalUser = true;
+      home = "/opt/gogs";
+      extraGroups = ["gogs"];
+      useDefaultShell = true;
+    };
   };
 
   networking = {
     hostName = "dinero";
-    firewall.allowedTCPPorts = [ 80 443 3000 42063 8080 8443 7080 1111 8000 ];
-    firewall.allowedUDPPorts = [ 80 443 3000 42063 8080 1900 8000 ];
+    firewall.allowedTCPPorts = [ 80 443 42063 ];
+    firewall.allowedUDPPorts = [ 80 443 42063 ];
   };
 
   services.openssh = {
