@@ -11,20 +11,10 @@
             "off_cmd": "http://127.0.0.1:7080/rest/items/Lights",
             "method": "POST",
             "headers": {"Content-type": "text/plain", "Accept": "application/json"},
-            "on_data": "ON",
-            "off_data": "OFF",
+            "on_data": {"RAW":"ON"},
+            "off_data": {"RAW":"OFF"},
             "name": "All Lights"
           },
-          {
-            "port": 52003,
-            "on_cmd":  "http://127.0.0.1:7080/rest/items/Hue_lamp1_switch",
-            "off_cmd": "http://127.0.0.1:7080/rest/items/Hue_lamp1_switch",
-            "method": "POST",
-            "headers": {"Content-type": "text/plain"},
-            "on_data": "ON",
-            "off_data": "OFF",
-            "name": "Desk"
-        },
         {
             "port": 52004,
             "on_cmd":  "http://192.168.2.138:3000/macros/Projector_On",
