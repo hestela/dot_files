@@ -11,12 +11,14 @@
     name = "openhab";
   };
 
+  networking.firewall.allowedTCPPorts = [ 7080 7443 ];
   # Default port is 8080
   systemd.services.openhab = {
     path = with pkgs; [
       jre
       bash
       gawk
+      procps
     ];
     description = "The openHAB 2 Home Automation Bus Solution";
     wantedBy = [ "multi-user.target" ];

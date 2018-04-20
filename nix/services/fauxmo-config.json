@@ -2,66 +2,50 @@
     "FAUXMO": {
         "ip_address": "auto"
     },
-    "DEVICES": [
-        {
+    "PLUGINS": {
+      "SimpleHTTPPlugin": {
+        "DEVICES": [
+          {
             "port": 52002,
-            "handler": {
-                "on_cmd":  "http://localhost:7080/rest/items/Lights",
-                "off_cmd": "http://localhost:7080/rest/items/Lights",
-                "method": "POST",
-                "headers": {"Content-type": "text/plain"},
-                "on_data": "ON",
-                "off_data": "OFF"
-            },
-            "description": "All Lights"
-        },
-        {
-            "port": 52003,
-            "handler": {
-                "on_cmd":  "http://localhost:7080/rest/items/Hue_lamp1_switch",
-                "off_cmd": "http://localhost:7080/rest/items/Hue_lamp1_switch",
-                "method": "POST",
-                "headers": {"Content-type": "text/plain"},
-                "on_data": "ON",
-                "off_data": "OFF"
-            },
-            "description": "Desk"
-        },
+            "on_cmd":  "http://127.0.0.1:7080/rest/items/Lights",
+            "off_cmd": "http://127.0.0.1:7080/rest/items/Lights",
+            "method": "POST",
+            "headers": {"Content-type": "text/plain", "Accept": "application/json"},
+            "on_data": {"RAW":"ON"},
+            "off_data": {"RAW":"OFF"},
+            "name": "All Lights"
+          },
         {
             "port": 52004,
-            "handler": {
-                "on_cmd":  "http://192.168.2.138:3000/macros/Projector_On",
-                "off_cmd":  "http://192.168.2.138:3000/macros/Projector_Off",
-                "method": "POST",
-                "headers": {"Content-type": "text/plain"},
-                "on_data": "",
-                "off_data": ""
-            },
-            "description": "Projector"
+            "on_cmd":  "http://192.168.2.138:3000/macros/Projector_On",
+            "off_cmd":  "http://192.168.2.138:3000/macros/Projector_Off",
+            "method": "POST",
+            "headers": {"Content-type": "text/plain"},
+            "on_data": "",
+            "off_data": "",
+            "name": "Projector"
         },
         {
             "port": 52005,
-            "handler": {
-                "on_cmd":   "http://192.168.2.138:3000/remotes/KENWOOD_1080VR/KEY_POWER",
-                "off_cmd":  "http://192.168.2.138:3000/remotes/KENWOOD_1080VR/KEY_POWER",
-                "method": "POST",
-                "headers": {"Content-type": "text/plain"},
-                "on_data": "",
-                "off_data": ""
-            },
-            "description": "Receiver"
+            "on_cmd":   "http://192.168.2.138:3000/remotes/KENWOOD_1080VR/KEY_POWER",
+            "off_cmd":  "http://192.168.2.138:3000/remotes/KENWOOD_1080VR/KEY_POWER",
+            "method": "POST",
+            "headers": {"Content-type": "text/plain"},
+            "on_data": "",
+            "off_data": "",
+            "name": "Receiver"
         },
         {
             "port": 52006,
-            "handler": {
-                "on_cmd":  "http://localhost:7080/rest/items/net_desktop",
-                "off_cmd": "http://localhost:7080/rest/items/net_desktop",
-                "method": "POST",
-                "headers": {"Content-type": "text/plain"},
-                "on_data": "ON",
-                "off_data": "OFF"
-            },
-            "description": "computer"
+            "on_cmd":  "http://127.0.0.1:7080/rest/items/net_desktop",
+            "off_cmd": "http://127.0.0.1:7080/rest/items/net_desktop",
+            "method": "POST",
+            "headers": {"Content-type": "text/plain"},
+            "on_data": "ON",
+            "off_data": "OFF",
+            "name": "computer"
         }
-    ]
+        ]
+      }
+    }
 }

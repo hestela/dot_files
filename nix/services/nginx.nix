@@ -27,8 +27,8 @@ let
       listen 443;
       server_name ${url};
 
-      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
       ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
@@ -57,8 +57,8 @@ let
       listen 443;
       server_name ${url};
 
-      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
       ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
@@ -78,13 +78,75 @@ let
       }
     }
   '';
+
+  fastcgiParams =  "include ${pkgs.nginx}/conf/fastcgi_params;";
+
+  # Somewhat functional example of serving up php pages
+  phpServer = {url, dir}:
+  ''
+    server {
+      listen 443;
+      server_name ${url};
+
+      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+      ${ssl_opts}
+
+      root ${dir};
+      index index.php;
+      location \ {
+        try_files $uri /index.php$is_args$args;
+      }
+
+      location ~ ^/index\.php(/|$) {
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        ${fastcgiParams}
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/run/phpfpm/nginx;
+      }
+
+      location ~ \.php$ {
+        return 404;
+      }
+    }
+  '';
+
+  # Simple html server
+  htmlServer = {url, dir}:
+  ''
+    server {
+      listen 443;
+      server_name ${url};
+
+      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+      ${ssl_opts}
+
+      root ${dir};
+      location \ {
+        try_files $uri /index.html;
+      }
+    }
+  '';
 in
 {
   environment.systemPackages = with pkgs;
   [
     openssl
     letsencrypt
+    php
   ];
+
+  # SQL
+  services.mysql.enable = true;
+  services.mysql.package = pkgs.mysql;
+  services.mysql.dataDir = "/var/db/mysql";
+  systemd.services.mysql.serviceConfig.Restart = "on-failure";
+  systemd.services.mysql.serviceConfig.RestartSec = "10s";
 
   services.nginx = {
     enable = true;
@@ -96,12 +158,35 @@ in
         }
 
         ${localhostReverseProxy { url = "ci.easycashmoney.org"; port = 8000; }}
-        ${localhostReverseProxy { url = "git.easycashmoney.org"; port = 3000; }}
+        ${localhostReverseProxy { url = "git.easycashmoney.org"; port = 1111; }}
         ${unifiProxy { url = "unifi.easycashmoney.org"; port = 8443; }}
+
+        #{phpServer { url = "calendar.easycashmoney.org"; dir = "/var/www/agendav-test/web/public"; }}
+        #{htmlServer { url = "calendar.easycashmoney.org"; dir = "/var/www/infcloud"; }}
       }
       events {
         worker_connections 768;
       }
     '';
   };
+
+  services.phpfpm.poolConfigs.nginx = ''
+    listen = /run/phpfpm/nginx
+    listen.owner = nginx
+    listen.group = nginx
+    listen.mode = 0660
+    user = nginx
+    pm = dynamic
+    pm.max_children = 75
+    pm.start_servers = 10
+    pm.min_spare_servers = 5
+    pm.max_spare_servers = 20
+    pm.max_requests = 500
+    php_flag[display_errors] = off
+    php_admin_value[error_log] = "/run/phpfpm/php-fpm.log"
+    php_admin_flag[log_errors] = on
+    php_value[date.timezone] = "UTC"
+    php_value[upload_max_filesize] = 10G
+    env[PATH] = /srv/www/bin:/var/setuid-wrappers:/srv/www/.nix-profile/bin:/srv/www/.nix-profile/sbin:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/run/current-system/sw/bin/run/current-system/sw/sbin
+  '';
 }
