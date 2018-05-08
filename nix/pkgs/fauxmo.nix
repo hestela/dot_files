@@ -15,7 +15,7 @@ python3Packages.buildPythonApplication rec {
 
   src = fetchgit {
     url = "https://github.com/hestela/fauxmo";
-    rev = "f2246b952a0246bf0dcd74e770c9daea0dcaa763";
-    sha256 = "0mfmbs09irh39ldak55lzsai9j3wmf0zwi0javnna6xkb2j1yh2i";
+    rev = "49d2c57058feab7b586b5d8212f93beeec5283a7";
+    sha256 = "0j94drxsvbirvjbczqx7r4gajwch5brdasgsav38fr4lrnv2r5mw";
   };
 }
