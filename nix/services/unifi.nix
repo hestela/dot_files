@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  networking.firewall.allowedTCPPorts = [ 8080 8880 8843 ];
+  networking.firewall.allowedTCPPorts = [ 8080 8880 8843 8443 ];
   networking.firewall.allowedUDPPorts = [ 3478 10001 ];
   systemd.services.unifiDocker = {
     path = with pkgs; [

@@ -16,6 +16,7 @@
   services.avahi.enable = true;
 
   environment.systemPackages = with pkgs; [
+    (import ../pkgs/bible.nix)
     htop
     iperf
     iperf2
