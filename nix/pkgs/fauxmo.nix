@@ -9,13 +9,13 @@ python3Packages.buildPythonApplication rec {
   ];
 
   name = "fauxmo-${version}";
-  version = "0.4.8";
+  version = "v0.4.7";
 
   doCheck = false;
 
   src = fetchgit {
     url = "https://github.com/n8henrie/fauxmo";
-    rev = "0bc916d3edca6572edb7325ba3803d313dea9ce9";
-    sha256 = "0j94drxsvbirvjbczqx7r4gajwch5brdasgsav38fr4lrnv2r5mw";
+    rev = "${version}";
+    sha256 = "0dbk6c9lljrcq890899ybh9yhyjjhrfkmqyb99vyhp36m10vjx0s";
   };
 }
