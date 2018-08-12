@@ -7,7 +7,18 @@
     ../services/fauxmo.nix
     ../services/nginx.nix
     ../services/unifi.nix
+    ../services/dnsmasq.nix
   ];
+
+  fileSystems."/mnt/repos" = {
+    device = "192.168.2.82:/nfs/repos";
+    fsType = "nfs";
+  };
+
+  services.nfs.server.enable = true;
+  services.nfs.server.exports = ''
+     /opt/kickstarts *(rw,nohide,insecure,no_subtree_check)
+  '';
 
   boot = {
     # Using UEFI boot
@@ -42,6 +53,11 @@
     tree
     unzip
     wget
+    python27Packages.virtualenv
+    vsftpd
+    xinetd
+    inetutils
+    syslinux
   ];
 
   nixpkgs.config.packageOverrides = pkgs: rec {
@@ -123,8 +139,8 @@
 
   networking = {
     hostName = "dinero";
-    firewall.allowedTCPPorts = [ 80 443 42063 ];
-    firewall.allowedUDPPorts = [ 80 443 42063 ];
+    firewall.allowedTCPPorts = [ 80 111 443 2049 42063 ];
+    firewall.allowedUDPPorts = [ 69 80 111 2049 443 42063 ];
   };
 
   services.openssh = {

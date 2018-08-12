@@ -44,6 +44,16 @@
             "on_data": "ON",
             "off_data": "OFF",
             "name": "computer"
+        },
+        {
+            "port": 52007,
+            "on_cmd":  "http://127.0.0.1:7080/rest/items/proxmox_server",
+            "off_cmd": "http://127.0.0.1:7080/rest/items/proxmox_server",
+            "method": "POST",
+            "headers": {"Content-type": "text/plain"},
+            "on_data": "ON",
+            "off_data": "OFF",
+            "name": "proxmox"
         }
         ]
       }
