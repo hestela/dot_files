@@ -113,6 +113,22 @@ let
     }
   '';
 
+  # Simple local file serving
+  fileServer = {url, dir}:
+  ''
+    server {
+      listen 80;
+      server_name ${url};
+
+      root ${dir};
+      autoindex on;
+      location \ {
+        deny all;
+        allow 192.168.2.0/24;
+      }
+    }
+  '';
+
   # Simple html server
   htmlServer = {url, dir}:
   ''
@@ -160,6 +176,7 @@ in
         ${localhostReverseProxy { url = "ci.easycashmoney.org"; port = 8000; }}
         ${localhostReverseProxy { url = "git.easycashmoney.org"; port = 1111; }}
         ${unifiProxy { url = "unifi.easycashmoney.org"; port = 8443; }}
+        ${fileServer { url = "dinero-serv.corp.easycashmoney.org"; dir = "/var/www/preseed"; }}
 
         #{phpServer { url = "calendar.easycashmoney.org"; dir = "/var/www/agendav-test/web/public"; }}
         #{htmlServer { url = "calendar.easycashmoney.org"; dir = "/var/www/infcloud"; }}
