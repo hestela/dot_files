@@ -139,7 +139,7 @@
 
   networking = {
     hostName = "dinero";
-    firewall.allowedTCPPorts = [ 80 111 443 2049 42063 ];
+    firewall.allowedTCPPorts = [ 80 111 443 2049 42063 51820 7000 ];
     firewall.allowedUDPPorts = [ 69 80 111 2049 443 42063 ];
   };
 

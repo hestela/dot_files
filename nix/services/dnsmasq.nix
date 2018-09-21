@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  domain = "home.net";
+  domain = "corp.easycashmoney.org";
   base="192.168.2";
 in
 {
@@ -19,7 +19,7 @@ in
 
       listen-address=127.0.0.1,${base}.58
       bind-interfaces
-      dhcp-range=lan,${base}.12,${base}.250
+      dhcp-range=lan,${base}.12,${base}.250,24h
 
       #set default gateway
       dhcp-option=lan,3,${base}.1
@@ -39,9 +39,10 @@ in
       dhcp-host=b8:27:eb:43:48:6c,${base}.107
       dhcp-host=00:1e:06:33:c1:d2,${base}.134
       dhcp-host=b8:27:eb:d2:c7:91,${base}.138
+      dhcp-host=b8:27:eb:df:01:3c,${base}.142,octopi
       dhcp-host=b8:ae:ed:eb:47:cd,${base}.158
-      dhcp-host=80:c1:6e:71:9e:e0,${base}.222,proxmox-mgt
-      dhcp-host=e4:11:5b:ce:e7:9c,${base}.221,proxmox
+      dhcp-host=e4:11:5b:ce:e7:9c,${base}.26,proxmox-mgt
+      dhcp-host=80:c1:6e:71:9e:e0,${base}.221,proxmox
 
       # Unifi gear
       dhcp-host=80:2a:a8:93:cf:72,${base}.3
@@ -53,7 +54,8 @@ in
       dhcp-host=00:17:88:2f:96:76,${base}.47
 
       # Proxmox VMs/LXCs (use 6-12 for now)
-      dhcp-host=9E:04:15:49:D1:C8,${base}.6,rhel75
+      dhcp-host=1A:BF:F1:B8:6A:4C,${base}.8,rhel75
+      dhcp-host=62:82:0E:22:08:D0,${base}.7,ubuntu1804
     '';
   };
 
@@ -75,12 +77,14 @@ in
 
       ${base}.82   senddata
       ${base}.107  retropie
+      ${base}.142  octopi
 
+      ${base}.26   proxmox-mgt
       ${base}.221  proxmox
-      ${base}.222  proxmox-mgt
 
       # VMs
-      ${base}.6   rhel75
+      ${base}.8   rhel75
+      ${base}.7   ubuntu1804
 
     '';
   };
