@@ -11,8 +11,8 @@
             "off_cmd": "http://127.0.0.1:7080/rest/items/Lights",
             "method": "POST",
             "headers": {"Content-type": "text/plain", "Accept": "application/json"},
-            "on_data": {"RAW":"ON"},
-            "off_data": {"RAW":"OFF"},
+            "on_data": "ON",
+            "off_data": "OFF",
             "name": "All Lights"
           },
         {
@@ -44,6 +44,16 @@
             "on_data": "ON",
             "off_data": "OFF",
             "name": "computer"
+        },
+        {
+            "port": 52007,
+            "on_cmd":  "http://127.0.0.1:7080/rest/items/proxmox_server",
+            "off_cmd": "http://127.0.0.1:7080/rest/items/proxmox_server",
+            "method": "POST",
+            "headers": {"Content-type": "text/plain"},
+            "on_data": "ON",
+            "off_data": "OFF",
+            "name": "proxmox"
         }
         ]
       }

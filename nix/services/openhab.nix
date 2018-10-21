@@ -19,6 +19,7 @@
       bash
       gawk
       procps
+      ipmitool
     ];
     description = "The openHAB 2 Home Automation Bus Solution";
     wantedBy = [ "multi-user.target" ];

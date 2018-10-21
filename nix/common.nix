@@ -17,7 +17,7 @@
   programs.bash.enableCompletion = true;
 
   networking.enableIPv6 = false;
-  networking.nameservers = [ "8.8.8.8" ];
+  #networking.nameservers = [ "8.8.8.8" ];
 
   boot.cleanTmpDir = true;
   boot.tmpOnTmpfs = true;

@@ -4,7 +4,7 @@ let
   fauxmopkg = import ../pkgs/fauxmo.nix;
 in
 {
-  networking.firewall.allowedTCPPorts = [ 52002 52003 52004 52005 52006 ];
+  networking.firewall.allowedTCPPorts = [ 52002 52003 52004 52005 52006 52007 ];
   networking.firewall.allowedUDPPorts = [ 1900 ];
   systemd.services.fauxmo = {
     path = with pkgs; [
