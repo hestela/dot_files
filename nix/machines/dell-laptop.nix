@@ -6,6 +6,7 @@
 
   nixpkgs.config = {
     allowUnfree = true;
+    allowBroken = true;
   };
 
   fonts = {
@@ -14,15 +15,16 @@
     ];
   };
 
-  # No idea why i need this
-  #nixpkgs.config.permittedInsecurePackages = [
-  #  "webkitgtk-2.4.11"
-  #];
-
   networking = {
     hostName = "cash";
-    wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     enableB43Firmware = true;
+    # temp fix
+    #enableIPv6 = false;
+    #networkmanager.enable = false;
+    #wireless.enable = true;
+    networkmanager.enable = true;
+    # Add ipv6 dns for some public wifi that dont give good dns servers
+    nameservers = [ "8.8.8.8" "2001:67c:2b0::4"];
   };
 
   services.xserver = {
@@ -51,6 +53,11 @@
     opengl.driSupport32Bit = true;
     pulseaudio.enable = true;
     pulseaudio.support32Bit = true;
+    bluetooth.enable = true;
+    bluetooth.extraConfig = ''
+      [general]
+      Enable=Source,Sink,Media,Socket
+    '';
   };
 
   users = {
@@ -69,14 +76,27 @@
 
   environment = {
     systemPackages = let pkgsUnstable = import
-    (
-      fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz
-    )
+    #(
+    #  fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz
+    #)
     # Spotify is non-free
-    { config.allowUnfree = true; };
+    {
+      config.allowUnfree = true;
+    };
     in
     with pkgs; [
+      snes9x-gtk
+      mgba
+      # crappy term umu
+      fceux
+      retroarch
+
+      # exfat support
+      exfat-utils
+
       (import ../pkgs/bible.nix)
+      (import ../pkgs/emulationstation.nix)
+      emulationstation
       chromium
       ffmpeg
       file
@@ -112,10 +132,11 @@
       python27
       python27Packages.pip
       # Broken on 26, missing package on 36
-      pkgsUnstable.python36Packages.redNotebook
+      #pkgsUnstable.python36Packages.redNotebook
       python27Packages.virtualenv
       python34
       python35Packages.flake8
+      sshuttle
       tmux
       unzip
       wget
@@ -125,6 +146,7 @@
       xscreensaver
       yubikey-personalization
       zlib
+      darktable
     ];
   };
 }
