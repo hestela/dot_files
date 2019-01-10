@@ -54,16 +54,16 @@ in
       dhcp-host=00:17:88:2f:96:76,${base}.47
 
       # Proxmox VMs/LXCs (use 6-12 for now)
-      dhcp-host=1A:BF:F1:B8:6A:4C,${base}.8,rhel75
       dhcp-host=62:82:0E:22:08:D0,${base}.7,ubuntu1804
+      dhcp-host=1A:BF:F1:B8:6A:4C,${base}.8,rhel75
+      dhcp-host=06:C4:EC:57:CD:07,${base}.9,slurm-head
     '';
   };
 
   # Need a static IP
   networking = {
     defaultGateway = "${base}.1";
-    # TODO: update to ipv4 option
-    interfaces.eno1.ip4 = [ { address = "${base}.58"; prefixLength = 24; } ];
+    interfaces.eno1.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
     interfaces.eno1.useDHCP = false;
 
     firewall.allowedTCPPorts = [ 53 ];
@@ -83,9 +83,9 @@ in
       ${base}.221  proxmox
 
       # VMs
-      ${base}.8   rhel75
       ${base}.7   ubuntu1804
-
+      ${base}.8   rhel75
+      ${base}.9   slurm-head
     '';
   };
 }

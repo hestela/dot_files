@@ -136,8 +136,8 @@ let
       listen 443;
       server_name ${url};
 
-      ssl_certificate ${ssl_dir}/${url}/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/${url}/privkey.pem;
+      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
+      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
       ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
@@ -179,7 +179,7 @@ in
         ${fileServer { url = "dinero-serv.corp.easycashmoney.org"; dir = "/var/www/preseed"; }}
 
         #{phpServer { url = "calendar.easycashmoney.org"; dir = "/var/www/agendav-test/web/public"; }}
-        #{htmlServer { url = "calendar.easycashmoney.org"; dir = "/var/www/infcloud"; }}
+        ${htmlServer { url = "calendar.easycashmoney.org"; dir = "/var/www/public-test"; }}
       }
       events {
         worker_connections 768;

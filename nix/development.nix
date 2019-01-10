@@ -13,8 +13,6 @@
       git                                # Git source control
       gnumake
       go
-      go2nix
-      godep
       python27
       python27Packages.pip
       python27Packages.virtualenv
