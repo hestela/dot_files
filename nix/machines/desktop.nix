@@ -16,11 +16,6 @@
     ];
   };
 
-  # No idea why i need this
-  nixpkgs.config.permittedInsecurePackages = [
-    "webkitgtk-2.4.11"
-  ];
-
   services.xserver = {
     enable = true;
     layout = "us";
@@ -45,6 +40,7 @@
     opengl.driSupport32Bit = true;
     pulseaudio.enable = true;
     pulseaudio.support32Bit = true;
+    bluetooth.enable = false;
   };
 
   users = {
@@ -76,18 +72,19 @@
     };
     in
     with pkgs; [
-      (import ../pkgs/cppclean.nix)
       (curl.override { gssSupport = true; })
+      (import ../pkgs/bible.nix)
+      (import ../pkgs/clementine.nix)
       (pidgin-with-plugins.override { plugins = [ pidginsipe ]; })
-      (discord.overrideAttrs (oldAttrs: rec {
-        src = fetchurl {
-          url = "https://dl.discordapp.net/apps/linux/0.0.4/discord-0.0.4.tar.gz";
-          sha256 = "1alw9rkv1vv0s1w33hd9ab1cgj7iqd7ad9kvn1d55gyki28f8qlb";
-        };
-      }))
+      #(discord.overrideAttrs (oldAttrs: rec {
+      #  src = fetchurl {
+      #    url = "https://dl.discordapp.net/apps/linux/0.0.4/discord-0.0.4.tar.gz";
+      #    sha256 = "1alw9rkv1vv0s1w33hd9ab1cgj7iqd7ad9kvn1d55gyki28f8qlb";
+      #  };
+      #}))
       bind
       chromium
-      clementine
+      discord
       ffmpeg
       file
       freerdp
@@ -120,10 +117,13 @@
       pulseaudioFull
       python27
       python27Packages.pip
-      python27Packages.redNotebook
       python27Packages.virtualenv
-      python34
-      python35Packages.flake8
+      python3
+      python36Packages.flake8
+      python36Packages.lxml
+      python36Packages.pymongo
+      rednotebook
+      rpm
       tmux
       trojita
       unzip
