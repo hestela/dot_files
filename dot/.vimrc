@@ -43,6 +43,7 @@ Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-scripts/tComment'
 Plugin 'wting/rust.vim'
 Plugin 'justinmk/vim-syntax-extra'
+Plugin 'python-mode/python-mode'
 
 call vundle#end()
 filetype plugin indent on
