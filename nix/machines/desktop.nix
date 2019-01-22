@@ -76,12 +76,12 @@
       (import ../pkgs/bible.nix)
       (import ../pkgs/clementine.nix)
       (pidgin-with-plugins.override { plugins = [ pidginsipe ]; })
-      #(discord.overrideAttrs (oldAttrs: rec {
-      #  src = fetchurl {
-      #    url = "https://dl.discordapp.net/apps/linux/0.0.4/discord-0.0.4.tar.gz";
-      #    sha256 = "1alw9rkv1vv0s1w33hd9ab1cgj7iqd7ad9kvn1d55gyki28f8qlb";
-      #  };
-      #}))
+      (discord.overrideAttrs (oldAttrs: rec {
+        src = fetchurl {
+          url = "https://dl.discordapp.net/apps/linux/0.0.6/discord-0.0.6.tar.gz";
+          sha256 = "1xy2d4gqixy6cchacxkx1pynavsgp49mg763ic9hld51a4nlibs4";
+        };
+      }))
       bind
       chromium
       discord
@@ -122,6 +122,7 @@
       python36Packages.flake8
       python36Packages.lxml
       python36Packages.pymongo
+      pkgsUnstable.steam
       rednotebook
       rpm
       tmux
