@@ -1,5 +1,10 @@
 { config, pkgs, ... }:
 {
+  imports =
+  [
+    ../services/xbox.nix
+  ];
+
   # Using BIOS boot
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
