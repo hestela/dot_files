@@ -155,6 +155,7 @@ in
     openssl
     letsencrypt
     php
+    certbot
   ];
 
   # SQL

@@ -34,7 +34,8 @@ in
       # Static IPs
       dhcp-host=30:cd:a7:a3:c6:46,${base}.2
       dhcp-host=ac:9e:17:b8:d6:d2,${base}.53
-      dhcp-host=b8:ac:6f:7d:f7:ed,${base}.58
+      dhcp-host=00:e0:81:cc:92:23,${base}.58
+      dhcp-host=00:e0:81:cc:92:8f,${base}.124,bones-mgt
       dhcp-host=00:90:a9:d9:83:2e,${base}.82,senddata
       dhcp-host=b8:27:eb:43:48:6c,${base}.107
       dhcp-host=00:1e:06:33:c1:d2,${base}.134
@@ -43,6 +44,7 @@ in
       dhcp-host=b8:ae:ed:eb:47:cd,${base}.158
       dhcp-host=e4:11:5b:ce:e7:9c,${base}.26,proxmox-mgt
       dhcp-host=80:c1:6e:71:9e:e0,${base}.221,proxmox
+      dhcp-host=b8:ac:6f:7d:f7:ed,${base}.193,centos
 
       # Unifi gear
       dhcp-host=80:2a:a8:93:cf:72,${base}.3
@@ -63,8 +65,8 @@ in
   # Need a static IP
   networking = {
     defaultGateway = "${base}.1";
-    interfaces.eno1.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
-    interfaces.eno1.useDHCP = false;
+    interfaces.enp4s0.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
+    interfaces.enp4s0.useDHCP = false;
 
     firewall.allowedTCPPorts = [ 53 ];
     firewall.allowedUDPPorts = [ 53 67 ];
@@ -72,8 +74,8 @@ in
     # DNS hostnames for dnsmasq
     extraHosts = ''
       # For unifi gear to find the controller
-      # Dines
-      ${base}.58   unifi dinero-serv
+      ${base}.58   unifi bones
+      ${base}.124  bones-mgt
 
       ${base}.82   senddata
       ${base}.107  retropie
