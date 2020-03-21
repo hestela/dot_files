@@ -12,6 +12,9 @@ in
       domain-needed
       bogus-priv
 
+      # Block some ads
+      addn-hosts=/etc/dns-ads.txt
+
       # needed for dns lookups to work
       domain = ${domain}
       expand-hosts
@@ -38,6 +41,7 @@ in
       dhcp-host=00:e0:81:cc:92:8f,${base}.124,bones-mgt
       dhcp-host=00:90:a9:d9:83:2e,${base}.82,senddata
       dhcp-host=b8:27:eb:43:48:6c,${base}.107
+      dhcp-host=01:94:c6:91:1d:1c:16,${base}.130,Henrys-iMac
       dhcp-host=00:1e:06:33:c1:d2,${base}.134
       dhcp-host=b8:27:eb:d2:c7:91,${base}.138
       dhcp-host=b8:27:eb:df:01:3c,${base}.142,octopi
@@ -45,6 +49,10 @@ in
       dhcp-host=e4:11:5b:ce:e7:9c,${base}.26,proxmox-mgt
       dhcp-host=80:c1:6e:71:9e:e0,${base}.221,proxmox
       dhcp-host=b8:ac:6f:7d:f7:ed,${base}.193,centos
+      dhcp-host=00:26:b9:5f:f8:03,${base}.194,steamed-hams
+      dhcp-host=98:09:cf:5b:33:40,${base}.91,OnePlusCashMoney
+
+      #dhcp-host=00:1c:2e:bb:24:40,${base}.197,procurve-bedroom
 
       # Unifi gear
       dhcp-host=80:2a:a8:93:cf:72,${base}.3
@@ -83,6 +91,9 @@ in
 
       ${base}.26   proxmox-mgt
       ${base}.221  proxmox
+      ${base}.194  steamed-hams
+
+      ${base}.130 Henrys-iMac 01:94:c6:91:1d:1c:16
 
       # VMs
       ${base}.7   ubuntu1804

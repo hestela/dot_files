@@ -1,14 +1,16 @@
 { config, pkgs, ... }:
 
 let
+  ssl_dir = ''/etc/letsencrypt/live/easycashmoney.org-0001/'';
   ssl_opts = ''
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;
-    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES257+EECDH:AES256+EDH";
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM";
     ssl_prefer_server_ciphers on;
     ssl_ecdh_curve secp384r1;
     ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout  10m;
     ssl_session_tickets off;
     ssl_stapling on;
     ssl_stapling_verify on;
@@ -17,9 +19,11 @@ let
     includeSubDomains; preload";
     add_header X-Frame-Options DENY;
     add_header X-Content-Type-Options nosniff;
-  '';
 
-  ssl_dir = ''/etc/letsencrypt/live'';
+    ssl_certificate ${ssl_dir}/fullchain.pem;
+    ssl_certificate_key ${ssl_dir}/privkey.pem;
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
+  '';
 
   localhostReverseProxy = {url, port}:
   ''
@@ -27,13 +31,7 @@ let
       listen 443;
       server_name ${url};
 
-      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
-      ssl_dhparam /etc/ssl/certs/dhparam.pem;
-
       ${ssl_opts}
-
-        ssl_trusted_certificate /etc/ssl/certs/unifi.pem;
 
       location / {
         proxy_set_header        Host $host;
@@ -56,10 +54,6 @@ let
     server {
       listen 443;
       server_name ${url};
-
-      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
-      ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
       ssl_trusted_certificate /etc/ssl/certs/unifi.pem;
@@ -129,16 +123,33 @@ let
     }
   '';
 
+  # Simple public file serving with ssl and password
+  fileServerSec = {url, dir}:
+  ''
+    server {
+      listen 443;
+      server_name ${url};
+
+      # FIXME: this could be broken with new cert
+      ${ssl_opts}
+
+      root ${dir};
+      auth_basic "Secret Files";
+      auth_basic_user_file /var/www/brogan-htpasswd;
+      autoindex on;
+      location ~ ^.*/(?P<request_basename>[^/]+\.(zip|MOV|mov))$ {
+        root ${dir};
+        add_header Content-Disposition 'attachment; filename="$request_basename"';
+      }
+    }
+  '';
+
   # Simple html server
   htmlServer = {url, dir}:
   ''
     server {
       listen 443;
       server_name ${url};
-
-      ssl_certificate ${ssl_dir}/git.easycashmoney.org/fullchain.pem;
-      ssl_certificate_key ${ssl_dir}/git.easycashmoney.org/privkey.pem;
-      ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
       ${ssl_opts}
 
@@ -150,13 +161,20 @@ let
   '';
 in
 {
-  environment.systemPackages = with pkgs;
-  [
-    openssl
-    letsencrypt
-    php
-    certbot
-  ];
+    environment = {
+    systemPackages = let pkgsUnstable = import
+    (
+      fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz
+    )
+    { };
+    in
+    with pkgs; [
+      openssl
+      letsencrypt
+      php
+      pkgsUnstable.certbot
+    ];
+  };
 
   # SQL
   services.mysql.enable = true;
@@ -175,12 +193,17 @@ in
         }
 
         ${localhostReverseProxy { url = "ci.easycashmoney.org"; port = 8000; }}
+        # GOGS
         ${localhostReverseProxy { url = "git.easycashmoney.org"; port = 1111; }}
         ${unifiProxy { url = "unifi.easycashmoney.org"; port = 8443; }}
-        ${fileServer { url = "dinero-serv.corp.easycashmoney.org"; dir = "/var/www/preseed"; }}
+        ${fileServer { url = "bones.corp.easycashmoney.org"; dir = "/var/www/preseed"; }}
+
+        # TESTING
+        #{localhostReverseProxy { url = "easycashmoney.org"; port = 2222; }}
+        ${fileServerSec { url = "easycashmoney.org"; dir = "/var/www/files"; }}
 
         #{phpServer { url = "calendar.easycashmoney.org"; dir = "/var/www/agendav-test/web/public"; }}
-        ${htmlServer { url = "calendar.easycashmoney.org"; dir = "/var/www/public-test"; }}
+        ${fileServerSec { url = "music.easycashmoney.org"; dir = "/share/brogan0/"; }}
       }
       events {
         worker_connections 768;
