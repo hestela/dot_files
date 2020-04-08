@@ -9,6 +9,7 @@
     ../services/unifi.nix
     ../services/dnsmasq.nix
     ../services/samba-serv.nix
+    ../services/kraplow.nix
     #../services/murmur.nix
     #../services/wireguard.nix
   ];

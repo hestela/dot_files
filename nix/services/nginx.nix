@@ -198,6 +198,8 @@ in
         ${unifiProxy { url = "unifi.easycashmoney.org"; port = 8443; }}
         ${fileServer { url = "bones.corp.easycashmoney.org"; dir = "/var/www/preseed"; }}
 
+        ${localhostReverseProxy { url = "game.easycashmoney.org"; port = 4200; }}
+
         # TESTING
         #{localhostReverseProxy { url = "easycashmoney.org"; port = 2222; }}
         ${fileServerSec { url = "easycashmoney.org"; dir = "/var/www/files"; }}
