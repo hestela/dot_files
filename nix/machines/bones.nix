@@ -17,7 +17,7 @@
   ];
 
   fileSystems."/mnt/repos" = {
-    device = "192.168.2.82:/nfs/repos";
+    device = "senddata.corp.easycashmoney.org:/nfs/repos";
     fsType = "nfs";
   };
 

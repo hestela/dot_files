@@ -1,20 +1,5 @@
 { config, pkgs, ... }:
 {
-    environment = {
-    systemPackages = let pkgsUnstable = import
-    (
-      fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz
-    )
-    { };
-    in
-    with pkgs; [
-      openssl
-      letsencrypt
-      php
-      pkgsUnstable.certbot
-    ];
-  };
-
   # SQL
   services.mysql.enable = true;
   services.mysql.package = pkgs.mysql;
