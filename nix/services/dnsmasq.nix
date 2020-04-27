@@ -14,6 +14,7 @@ in
 
       # Block some ads
       addn-hosts=/etc/dns-ads.txt
+      conf-file=/etc/dns-conf.txt
 
       # needed for dns lookups to work
       domain = ${domain}

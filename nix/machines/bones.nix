@@ -10,6 +10,8 @@
     ../services/dnsmasq.nix
     ../services/samba-serv.nix
     ../services/kraplow.nix
+    ../services/jitsi.nix
+    ../services/airsonic.nix
     #../services/murmur.nix
     #../services/wireguard.nix
   ];

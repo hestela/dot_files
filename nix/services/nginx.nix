@@ -25,6 +25,33 @@ let
     ssl_dhparam /etc/ssl/certs/dhparam.pem;
   '';
 
+  rewriteRevProxy = {url, port, loc}:
+  ''
+    server {
+      listen 443;
+      server_name ${url};
+
+      ${ssl_opts}
+
+      location / {
+        proxy_set_header        Host $host;
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header        X-Forwarded-Proto $scheme;
+
+        proxy_read_timeout  90;
+        chunked_transfer_encoding off;
+
+        proxy_pass          http://localhost:${toString port};
+        proxy_redirect      http://localhost:${toString port} https://${url};
+      }
+
+      location ${toString loc} {
+        proxy_pass        http://localhost:${toString port}/;
+      }
+    }
+  '';
+
   localhostReverseProxy = {url, port}:
   ''
     server {
@@ -199,6 +226,7 @@ in
         ${fileServer { url = "bones.corp.easycashmoney.org"; dir = "/var/www/preseed"; }}
 
         ${localhostReverseProxy { url = "game.easycashmoney.org"; port = 4200; }}
+        ${localhostReverseProxy { url = "meet.easycashmoney.org"; port = 999; }}
 
         # TESTING
         #{localhostReverseProxy { url = "easycashmoney.org"; port = 2222; }}
