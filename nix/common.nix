@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
+  console.font = "lat9w-16";
+  console.keyMap = "us";
   i18n = {
-    consoleFont = "lat9w-16";
-    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
   };
 
