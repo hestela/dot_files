@@ -12,6 +12,8 @@
     ../services/kraplow.nix
     ../services/jitsi.nix
     ../services/airsonic.nix
+    ../services/fail2ban.nix
+    ../services/gitlab.nix
     #../services/murmur.nix
     #../services/wireguard.nix
   ];
@@ -67,7 +69,7 @@
     unzip
     wget
     python27Packages.virtualenv
-    python36Packages.virtualenv
+    python38Packages.virtualenv
     vsftpd
     xinetd
     inetutils
@@ -103,31 +105,6 @@
         ];
       };
       in [ env ];
-  };
-
-  # TESTING gitbucket
-  systemd.services.gitbucket = {
-    path = with pkgs; [
-      git
-      sqlite
-      openssh
-      bash
-      jre
-    ];
-    description = "GitBucket (Git Service)";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "syslog.target" "network.target" ];
-    script =''java -jar /opt/gitbucket/gitbucket.war --port=2222'';
-    environment.HOME = "/opt/gitbucket";
-    environment.USER = "gitbucket";
-    serviceConfig = {
-      PermissionsStartOnly = true;
-      Type = "simple";
-      User = "gitbucket";
-      Group = "gogs";
-      WorkingDirectory="/opt/gitbucket";
-      Restart = "always";
-    };
   };
 
   systemd.services.gogs = {
