@@ -1,14 +1,41 @@
 { config, pkgs, ... }:
+let
+  acme ="easycashmoney.org";
+  gitlab_url = "gitlab.easycashmoney.org";
+  cert = "/var/lib/acme/easycashmoney.org/fullchain.pem";
+in
 {
   services.nginx = {
-
     virtualHosts."gitlab.easycashmoney.org" = {
+      useACMEHost = "${acme}";
       forceSSL = true;
       locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
-      useACMEHost = "easycashmoney.org";
+      locations."/v2" = {
+        proxyPass = "http://localhost:5000";
+        extraConfig = ''
+          chunked_transfer_encoding on;
+          client_max_body_size 0;
+          add_header Docker-Distribution-Api-Version "registry/2.0";
+          if ($http_user_agent ~ "^(docker\/1\.(3|4|5(?!\.[0-9]-dev))|Go ).*$" ) {
+            return 404;
+          }
+        '';
+      };
     };
-
   };
+
+  services.dockerRegistry = {
+    enable = true;
+    listenAddress = "127.0.0.1";
+    port = 5000;
+    extraConfig = {
+      REGISTRY_AUTH_TOKEN_REALM = "https://${gitlab_url}/jwt/auth";
+      REGISTRY_AUTH_TOKEN_SERVICE = "container_registry";
+      REGISTRY_AUTH_TOKEN_ISSUER = "gitlab-issuer";
+      REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE = "${cert}";
+    };
+  };
+
   services.gitlab = {
     enable = true;
     databasePasswordFile = "/var/keys/gitlab/db_password";
@@ -42,8 +69,8 @@
         enabled = true;
         host = "gitlab.easycashmoney.org";
         port = "443";
-        key = "/var/lib/acme/easycashmoney.org/key.pem";
-        api_url = "http://localhost:5000";
+        key = "${cert}";
+        api_url = "http://localhost:5000/";
         issuer = "gitlab-issuer";
       };
       packages = { enabled = true; };

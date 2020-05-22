@@ -16,7 +16,8 @@ in
     certs = {
       "${url}" = {
         user = "nginx";
-        group = "nginx";
+        group = "git";
+        allowKeysForGroup = true;
         #webroot = "/var/www/challenges/";
         # Test LE server
         #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
