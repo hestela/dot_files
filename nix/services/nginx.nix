@@ -25,8 +25,6 @@ in
           "game.${url}" = null;
           "unifi.${url}" = null;
           "gitlab.${url}" = null;
-          "git.${url}" = null;
-          "ci.${url}" = null;
           "music.${url}" = null;
           "meet.${url}" = null;
           "gps.${url}" = null;
@@ -44,16 +42,6 @@ in
     recommendedTlsSettings = true;
 
     # Reverse proxies
-    virtualHosts."ci.easycashmoney.org" = {
-      forceSSL = true;
-      useACMEHost = "${url}";
-      locations."/".proxyPass = "http://localhost:8000";
-    };
-    virtualHosts."git.easycashmoney.org" = {
-      useACMEHost = "${url}";
-      forceSSL = true;
-      locations."/".proxyPass = "http://localhost:1111";
-    };
     virtualHosts."game.easycashmoney.org" = {
       forceSSL = true;
       useACMEHost = "${url}";
