@@ -14,8 +14,14 @@
     ../services/airsonic.nix
     ../services/fail2ban.nix
     ../services/gitlab.nix
+    ../services/grafana.nix
     #../services/murmur.nix
     #../services/wireguard.nix
+  ];
+
+  boot.kernelParams = [
+    "console=ttyS0,115200"
+    "console=tty1"
   ];
 
   fileSystems."/mnt/repos" = {

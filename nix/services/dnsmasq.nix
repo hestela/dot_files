@@ -38,8 +38,8 @@ in
       # Static IPs
       dhcp-host=30:cd:a7:a3:c6:46,${base}.2
       dhcp-host=ac:9e:17:b8:d6:d2,${base}.53
-      dhcp-host=00:e0:81:cc:92:23,${base}.58
-      dhcp-host=00:e0:81:cc:92:8f,${base}.124,bones-mgt
+      dhcp-host=00:e0:81:cc:a1:45,${base}.58,bones
+      dhcp-host=00:e0:81:cc:a0:a3,${base}.124,bones-mgt
       dhcp-host=00:90:a9:d9:83:2e,${base}.82,senddata
       dhcp-host=b8:27:eb:43:48:6c,${base}.107
       dhcp-host=01:94:c6:91:1d:1c:16,${base}.130,Henrys-iMac
@@ -74,8 +74,8 @@ in
   # Need a static IP
   networking = {
     defaultGateway = "${base}.1";
-    interfaces.enp4s0.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
-    interfaces.enp4s0.useDHCP = false;
+    interfaces.enp3s0.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
+    interfaces.enp3s0.useDHCP = false;
 
     firewall.allowedTCPPorts = [ 53 ];
     firewall.allowedUDPPorts = [ 53 67 ];

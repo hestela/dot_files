@@ -1,6 +1,13 @@
 { config, pkgs, ... }:
 let
   url = "easycashmoney.org";
+  index_files_conf = ''
+    autoindex on;
+    location / {
+      allow 192.168.2.0/24;
+      deny all;
+    }
+  '';
 in
 {
   # TEMP
@@ -55,7 +62,12 @@ in
     virtualHosts."gps.easycashmoney.org" = {
       forceSSL = true;
       useACMEHost = "${url}";
-      locations."/".proxyPass = "http://localhost:5500";
+      locations."/coords" = {
+        proxyPass = "http://localhost:5500";
+        extraConfig = ''auth_basic_user_file /var/www/gps-htpasswd;'';
+      };
+      # Grafana
+      locations."/".proxyPass = "http://localhost:3000";
     };
 
     virtualHosts."unifi.easycashmoney.org" = {
@@ -80,36 +92,18 @@ in
       enableACME = true;
       root = "/var/www/files/";
       basicAuthFile = "/var/www/brogan-htpasswd";
-      extraConfig = ''
-          autoindex on;
-          location \ {
-            deny all;
-            allow 192.168.2.0/24;
-          }
-      '';
+      extraConfig = "${index_files_conf}";
     };
     virtualHosts."music.easycashmoney.org" = {
       forceSSL = true;
       useACMEHost = "${url}";
       basicAuthFile = "/var/www/brogan-htpasswd";
       root = "/share/brogan0/";
-      extraConfig = ''
-          autoindex on;
-          location \ {
-            deny all;
-            allow 192.168.2.0/24;
-          }
-      '';
+      extraConfig = "${index_files_conf}";
     };
     virtualHosts."bones.corp.easycashmoney.org" = {
       root = "/var/www/preseed";
-      extraConfig = ''
-          autoindex on;
-          location / {
-            allow 192.168.2.0/24;
-            deny all;
-          }
-      '';
+      extraConfig = "${index_files_conf}";
     };
   };
 }
