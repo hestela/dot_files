@@ -14,7 +14,7 @@
     ../services/airsonic.nix
     ../services/fail2ban.nix
     ../services/gitlab.nix
-    ../services/grafana.nix
+    ../services/flask.nix
     #../services/murmur.nix
     #../services/wireguard.nix
   ];

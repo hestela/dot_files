@@ -10,8 +10,6 @@ let
   '';
 in
 {
-  # TEMP
-  networking.firewall.allowedTCPPorts = [ 5500 ];
   # SQL
   services.mysql.enable = true;
   services.mysql.package = pkgs.mysql;
@@ -62,12 +60,10 @@ in
     virtualHosts."gps.easycashmoney.org" = {
       forceSSL = true;
       useACMEHost = "${url}";
-      locations."/coords" = {
+      basicAuthFile = "/var/www/gps-htpasswd";
+      locations."/" = {
         proxyPass = "http://localhost:5500";
-        extraConfig = ''auth_basic_user_file /var/www/gps-htpasswd;'';
       };
-      # Grafana
-      locations."/".proxyPass = "http://localhost:3000";
     };
 
     virtualHosts."unifi.easycashmoney.org" = {

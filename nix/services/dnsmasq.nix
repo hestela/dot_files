@@ -29,7 +29,7 @@ in
       dhcp-option=lan,3,${base}.1
 
       #set DNS server
-      dhcp-option=lan,6,${base}.58
+      dhcp-option=lan,6,${base}.58,8.8.8.8
 
       dhcp-boot=pxelinux.0
       enable-tftp
@@ -37,6 +37,7 @@ in
 
       # Static IPs
       dhcp-host=30:cd:a7:a3:c6:46,${base}.2
+      dhcp-host=00:26:B9:5F:F8:0B,${base}.11
       dhcp-host=ac:9e:17:b8:d6:d2,${base}.53
       dhcp-host=00:e0:81:cc:a1:45,${base}.58,bones
       dhcp-host=00:e0:81:cc:a0:a3,${base}.124,bones-mgt
@@ -93,6 +94,7 @@ in
       ${base}.26   proxmox-mgt
       ${base}.221  proxmox
       ${base}.194  steamed-hams
+      ${base}.11   steamed-hams-mgt
 
       ${base}.130 Henrys-iMac 01:94:c6:91:1d:1c:16
 
