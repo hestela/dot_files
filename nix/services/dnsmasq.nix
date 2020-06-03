@@ -75,8 +75,8 @@ in
   # Need a static IP
   networking = {
     defaultGateway = "${base}.1";
-    interfaces.enp3s0.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
-    interfaces.enp3s0.useDHCP = false;
+    interfaces.eno1.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
+    interfaces.eno1.useDHCP = false;
 
     firewall.allowedTCPPorts = [ 53 ];
     firewall.allowedUDPPorts = [ 53 67 ];

@@ -4,7 +4,7 @@ python3Packages.buildPythonApplication rec {
 
   propagatedBuildInputs = [
     pkgs.pandoc
-    python36
+    python38
   ];
 
   name = "-${version}";

@@ -42,7 +42,7 @@
     loader = {
       grub.enable = true;
       grub.version = 2;
-      grub.device = "/dev/sda";
+      grub.device = "/dev/sdb";
       grub.configurationLimit = 10;
     };
 
@@ -93,7 +93,7 @@
       home = "/home/henry";
 
       # Configure for sudo, network, gfx, and docker
-      extraGroups = ["wheel" "docker" "ssl-cert" ];
+      extraGroups = [ "wheel" "docker" "ssl-cert" ];
       uid = 1000;
       shell = "/run/current-system/sw/bin/bash";
     };

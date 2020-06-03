@@ -3,8 +3,8 @@ with import <nixpkgs> {};
 python3Packages.buildPythonApplication rec {
 
   propagatedBuildInputs = [
-    python36
-    python36Packages.requests
+    python38
+    python38Packages.requests
     (import ./pypandoc.nix)
   ];
 
