@@ -2,7 +2,7 @@
 let
   acme ="easycashmoney.org";
   gitlab_url = "gitlab.easycashmoney.org";
-  cert = "/var/lib/acme/easycashmoney.org/fullchain.pem";
+  cert_dir = "/var/gitlab/state/home/";
 in
 {
   services.nginx = {
@@ -32,7 +32,9 @@ in
       REGISTRY_AUTH_TOKEN_REALM = "https://${gitlab_url}/jwt/auth";
       REGISTRY_AUTH_TOKEN_SERVICE = "container_registry";
       REGISTRY_AUTH_TOKEN_ISSUER = "gitlab-issuer";
-      REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE = "${cert}";
+      REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE = "${cert_dir}/domain.crt";
+      REGISTRY_HTTP_TLS_CERTIFICATE = "${cert_dir}/domain.crt";
+      REGISTRY_HTTP_TLS_KEY = "${cert_dir}/domain.key";
     };
   };
 
@@ -69,7 +71,7 @@ in
         enabled = true;
         host = "gitlab.easycashmoney.org";
         port = "443";
-        key = "${cert}";
+        key = "${cert_dir}/domain.crt";
         api_url = "http://localhost:5000/";
         issuer = "gitlab-issuer";
       };

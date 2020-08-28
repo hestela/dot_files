@@ -32,7 +32,7 @@ in
       Group = "nginx";
       Restart = "always";
       WorkingDirectory = "/var/www/esp32-gps/flask";
-      ExecStartPre = "${pkgs.git}/bin/git pull origin master";
+#      ExecStartPre = "${pkgs.git}/bin/git pull origin master";
       ExecStart = "${gunicorn}/bin/gunicorn --bind 0.0.0.0:5500 wsgi:app";
     };
   };

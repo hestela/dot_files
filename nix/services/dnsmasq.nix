@@ -7,7 +7,7 @@ in
   services.dnsmasq = {
     enable = true;
     # OpenDNS
-    servers = [ "208.67.222.222" "208.67.220.220" ];
+    servers = [ "8.8.8.8" "8.8.4.4" ];
     extraConfig = ''
       domain-needed
       bogus-priv
@@ -39,8 +39,8 @@ in
       dhcp-host=30:cd:a7:a3:c6:46,${base}.2
       dhcp-host=00:26:B9:5F:F8:0B,${base}.11
       dhcp-host=ac:9e:17:b8:d6:d2,${base}.53
-      dhcp-host=00:e0:81:cc:a1:45,${base}.58,bones
-      dhcp-host=00:e0:81:cc:a0:a3,${base}.124,bones-mgt
+      dhcp-host=00:26:b9:5f:f8:03,${base}.58,bones
+      dhcp-host=00:26:b9:5f:f8:0b,${base}.124,bones-mgt
       dhcp-host=00:90:a9:d9:83:2e,${base}.82,senddata
       dhcp-host=b8:27:eb:43:48:6c,${base}.107
       dhcp-host=01:94:c6:91:1d:1c:16,${base}.130,Henrys-iMac
@@ -51,7 +51,6 @@ in
       dhcp-host=e4:11:5b:ce:e7:9c,${base}.26,proxmox-mgt
       dhcp-host=80:c1:6e:71:9e:e0,${base}.221,proxmox
       dhcp-host=b8:ac:6f:7d:f7:ed,${base}.193,centos
-      dhcp-host=00:26:b9:5f:f8:03,${base}.194,steamed-hams
       dhcp-host=98:09:cf:5b:33:40,${base}.91,OnePlusCashMoney
 
       #dhcp-host=00:1c:2e:bb:24:40,${base}.197,procurve-bedroom
@@ -65,6 +64,10 @@ in
       # Hue Bridge
       dhcp-host=00:17:88:2f:96:76,${base}.47
 
+      # tp-link plugs
+      dhcp-host=50:c7:bf:59:37:3b,${base}.83
+      dhcp-host=50:c7:bf:98:b9:45,${base}.178
+
       # Proxmox VMs/LXCs (use 6-12 for now)
       dhcp-host=62:82:0E:22:08:D0,${base}.7,ubuntu1804
       dhcp-host=1A:BF:F1:B8:6A:4C,${base}.8,rhel75
@@ -77,6 +80,7 @@ in
     defaultGateway = "${base}.1";
     interfaces.eno1.ipv4.addresses = [ { address = "${base}.58"; prefixLength = 24; } ];
     interfaces.eno1.useDHCP = false;
+    nameservers = [ "127.0.0.1" "8.8.8.8" ];
 
     firewall.allowedTCPPorts = [ 53 ];
     firewall.allowedUDPPorts = [ 53 67 ];
@@ -93,8 +97,6 @@ in
 
       ${base}.26   proxmox-mgt
       ${base}.221  proxmox
-      ${base}.194  steamed-hams
-      ${base}.11   steamed-hams-mgt
 
       ${base}.130 Henrys-iMac 01:94:c6:91:1d:1c:16
 

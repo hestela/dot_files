@@ -15,6 +15,7 @@
     ../services/fail2ban.nix
     ../services/gitlab.nix
     ../services/flask.nix
+    ../services/fan-control.nix
     #../services/murmur.nix
     #../services/wireguard.nix
   ];
@@ -61,6 +62,7 @@
 
   environment.systemPackages = with pkgs; [
     (import ../pkgs/bible.nix)
+    #(import ../pkgs/op25.nix)
     geekbench
     #(import ../pkgs/pxeconfig.nix)
     ffmpeg-full

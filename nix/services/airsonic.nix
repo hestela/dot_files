@@ -2,10 +2,11 @@
 let
   image = "airsonic";
   data = "-v /opt/airsonic/data:/airsonic/data";
-  music = "-v /opt/music:/airsonic/music";
+  music = "-v /opt/music:/airsonic/music/henry";
+  brogan_music = "-v /share/brogan0/airsonic-music:/airsonic/music/brogan";
   playlists = "-v /opt/airsonic/playlists:/airsonic/playlists";
   podcats = "-v /opt/airsonic/podcasts:/airsonic/podcasts";
-  opts = "${data} ${music} ${playlists} ${podcats} -p 4040:4040 airsonic/airsonic";
+  opts = "${data} ${music} ${brogan_music} ${playlists} ${podcats} -p 4040:4040 airsonic/airsonic";
 in
 
 {

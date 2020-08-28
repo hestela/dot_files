@@ -17,12 +17,12 @@
           },
         {
             "port": 52004,
-            "on_cmd":  "http://192.168.2.138:3000/macros/Projector_On",
-            "off_cmd":  "http://192.168.2.138:3000/macros/Projector_Off",
+            "on_cmd":  "http://127.0.0.1:7080/rest/items/projector",
+            "off_cmd": "http://127.0.0.1:7080/rest/items/projector",
             "method": "POST",
-            "headers": {"Content-type": "text/plain"},
-            "on_data": "",
-            "off_data": "",
+            "headers": {"Content-type": "text/plain", "Accept": "application/json"},
+            "on_data": "ON",
+            "off_data": "OFF",
             "name": "Projector"
         },
         {
