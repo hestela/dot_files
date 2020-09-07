@@ -146,6 +146,10 @@ in
                         record off;
                         on_publish http://localhost:4344/auth;
                 }
+                application local {
+                        live on;
+                        record off;
+                }
         }
       }
     '';

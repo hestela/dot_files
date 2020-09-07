@@ -1,12 +1,14 @@
 { config, pkgs, ... }:
 let
-  image = "airsonic";
-  data = "-v /opt/airsonic/data:/airsonic/data";
-  music = "-v /opt/music:/airsonic/music/henry";
-  brogan_music = "-v /share/brogan0/airsonic-music:/airsonic/music/brogan";
-  playlists = "-v /opt/airsonic/playlists:/airsonic/playlists";
-  podcats = "-v /opt/airsonic/podcasts:/airsonic/podcasts";
-  opts = "${data} ${music} ${brogan_music} ${playlists} ${podcats} -p 4040:4040 airsonic/airsonic";
+  data = "-v /opt/airsonic/data-adv:/var/airsonic/";
+  music = "-v /opt/music:/var/music/henry";
+  brogan_music = "-v /share/brogan0/airsonic-music:/var/music/brogan";
+  playlists = "-v /opt/airsonic/playlists:/var/playlists";
+  podcats = "-v /opt/airsonic/podcasts:/var/podcast";
+  image = "airsonicadvanced/airsonic-advanced:latest";
+
+  name = "airsonic";
+  opts = "${data} ${music} ${brogan_music} ${playlists} ${podcats} -p 4040:4040 ${image}";
 in
 
 {
@@ -24,10 +26,10 @@ in
       User = "root";
       Group = "root";
       Restart = "always";
-      ExecStart = "${pkgs.docker}/bin/docker run --restart=always --name=${image} ${opts}";
-      ExecStop = "${pkgs.docker}/bin/docker stop ${image}";
-      ExecStopPost = "${pkgs.docker}/bin/docker rm -f ${image}";
-      ExecReload = "${pkgs.docker}/bin/docker restart ${image}";
+      ExecStart = "${pkgs.docker}/bin/docker run --restart=always --name=${name} ${opts}";
+      ExecStop = "${pkgs.docker}/bin/docker stop ${name}";
+      ExecStopPost = "${pkgs.docker}/bin/docker rm -f ${name}";
+      ExecReload = "${pkgs.docker}/bin/docker restart ${name}";
     };
   };
 }
