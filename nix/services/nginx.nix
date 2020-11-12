@@ -21,26 +21,19 @@ in
         user = "nginx";
         group = "git";
         allowKeysForGroup = true;
-        #webroot = "/var/www/challenges/";
+        webroot = "/var/www/challenges/";
         # Test LE server
         #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
         extraDomains = {
-          "game.${url}" = null;
-          "unifi.${url}" = null;
-          "gitlab.${url}" = null;
-          "music.${url}" = null;
-          "meet.${url}" = null;
-          "gps.${url}" = null;
-        };
-      };
-      "blackandred.media" = {
-        user = "nginx";
-        webroot = "/var/www/challenges/";
-      };
-      "broganohara.com" = {
-        user = "nginx";
-        webroot = "/var/www/challenges/";
-        extraDomains = {
+          "blackandred.media" = null;
+          "game.easycashmoney.org" = null;
+          "gitlab.easycashmoney.org" = null;
+          "gps.easycashmoney.org" = null;
+          "meet.easycashmoney.org" = null;
+          "music.easycashmoney.org" = null;
+          "unifi.easycashmoney.org" = null;
+
+          "broganohara.com" = null;
           "music.broganohara.com" = null;
         };
       };
@@ -78,7 +71,7 @@ in
 
     virtualHosts."music.broganohara.com" = {
       forceSSL = true;
-      useACMEHost = "broganohara.com";
+      useACMEHost = "${url}";
       locations."/".proxyPass = "http://localhost:4040";
     };
 
@@ -101,7 +94,7 @@ in
     virtualHosts."easycashmoney.org" = {
       default = true;
       forceSSL = true;
-      enableACME = true;
+      useACMEHost = "${url}";
       root = "/var/www/files/";
       basicAuthFile = "/var/www/brogan-htpasswd";
       extraConfig = "${index_files_conf}";
@@ -113,6 +106,29 @@ in
       root = "/share/brogan0/";
       extraConfig = "${index_files_conf}";
     };
+
+    virtualHosts."broganohara.com" = {
+      forceSSL = true;
+      useACMEHost = "${url}";
+      locations."/" = {
+        extraConfig = ''
+          auth_basic secured;
+          auth_basic_user_file /var/www/brogan-htpasswd;
+          autoindex on;
+          root /share/brogan0/;
+        '';
+      };
+
+      locations."/Band-Practice-Recordings/" = {
+        extraConfig = ''
+          auth_basic secured;
+          auth_basic_user_file /var/www/public-htpasswd;
+          autoindex on;
+          root /share/brogan0/;
+        '';
+      };
+    };
+
     virtualHosts."bones.corp.easycashmoney.org" = {
       root = "/var/www/preseed";
       extraConfig = "${index_files_conf}";
