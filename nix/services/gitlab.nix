@@ -1,13 +1,15 @@
 { config, pkgs, ... }:
 let
-  acme ="easycashmoney.org";
   gitlab_url = "gitlab.easycashmoney.org";
   cert_dir = "/var/gitlab/state/home/";
+  cert = "/etc/letsencrypt/live/blackandred.media/fullchain.pem";
+  key = "/etc/letsencrypt/live/blackandred.media/privkey.pem";
 in
 {
   services.nginx = {
     virtualHosts."gitlab.easycashmoney.org" = {
-      useACMEHost = "${acme}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       forceSSL = true;
       locations."/".proxyPass = "http://unix:/run/gitlab/gitlab-workhorse.socket";
       locations."/v2" = {

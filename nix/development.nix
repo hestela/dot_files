@@ -17,7 +17,6 @@
       python27Packages.pip
       python27Packages.virtualenv
       sqlite
-      vimPlugins.YouCompleteMe
       vim_configurable
       which
     ];

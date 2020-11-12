@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
 let
+  cert = "/etc/letsencrypt/live/blackandred.media/fullchain.pem";
+  key = "/etc/letsencrypt/live/blackandred.media/privkey.pem";
   url = "easycashmoney.org";
   index_files_conf = ''
     autoindex on;
@@ -13,37 +15,21 @@ in
 
   # RTMP
   networking.firewall.allowedTCPPorts = [ 1935 4344 5050 ];
-  security.acme = {
-    email = "admin@easycashmoney.org";
-    acceptTerms = true;
-    certs = {
-      "${url}" = {
-        user = "nginx";
-        group = "git";
-        allowKeysForGroup = true;
-        webroot = "/var/www/challenges/";
-        # Test LE server
-        #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
-        extraDomains = {
-          "blackandred.media" = null;
-          "game.easycashmoney.org" = null;
-          "gitlab.easycashmoney.org" = null;
-          "gps.easycashmoney.org" = null;
-          "meet.easycashmoney.org" = null;
-          "music.easycashmoney.org" = null;
-          "unifi.easycashmoney.org" = null;
 
-          "broganohara.com" = null;
-          "music.broganohara.com" = null;
-        };
-      };
-    };
+  # ACME renewal hack
+  # the inbox acme renewal is a hot mess when it comes to multiple subdomains
+  # I am manually creating and renewing my certs since it is more reliable
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      "0 0 0 ? * SUN *  root certbot renew --standalone --pre-hook \"systemctl stop nginx\" --post-hook \"systemctl start nginx\""
+    ];
   };
 
   services.nginx = {
     package = (pkgs.nginx.override { modules = [ pkgs.nginxModules.rtmp ]; });
     enable = true;
-    logError = "/var/log/nginx-error.log";
+    #logError = "/var/log/nginx-error.log";
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
@@ -52,17 +38,20 @@ in
     # Reverse proxies
     virtualHosts."game.easycashmoney.org" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       locations."/".proxyPass = "http://localhost:4200";
     };
     virtualHosts."meet.easycashmoney.org" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       locations."/".proxyPass = "http://localhost:999";
     };
     virtualHosts."gps.easycashmoney.org" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       basicAuthFile = "/var/www/gps-htpasswd";
       locations."/" = {
         proxyPass = "http://localhost:5500";
@@ -71,13 +60,15 @@ in
 
     virtualHosts."music.broganohara.com" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       locations."/".proxyPass = "http://localhost:4040";
     };
 
     virtualHosts."unifi.easycashmoney.org" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       sslTrustedCertificate = "/etc/ssl/certs/unifi.pem";
 
       # Custom proxy pass for unifi https
@@ -94,14 +85,16 @@ in
     virtualHosts."easycashmoney.org" = {
       default = true;
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       root = "/var/www/files/";
       basicAuthFile = "/var/www/brogan-htpasswd";
       extraConfig = "${index_files_conf}";
     };
     virtualHosts."music.easycashmoney.org" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       basicAuthFile = "/var/www/brogan-htpasswd";
       root = "/share/brogan0/";
       extraConfig = "${index_files_conf}";
@@ -109,7 +102,8 @@ in
 
     virtualHosts."broganohara.com" = {
       forceSSL = true;
-      useACMEHost = "${url}";
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
       locations."/" = {
         extraConfig = ''
           auth_basic secured;
