@@ -16,6 +16,7 @@
     ../services/gitlab.nix
     ../services/flask.nix
     ../services/fan-control.nix
+    ../services/heimdall.nix
     #../services/murmur.nix
     #../services/wireguard.nix
   ];
@@ -109,6 +110,11 @@
       home = "/home/broganohara";
       useDefaultShell = true;
       extraGroups = ["fileshare"];
+    };
+    extraUsers.heimdall = {
+      isSystemUser = true;
+      home = "/opt/heimdall";
+      extraGroups = ["docker"];
     };
   };
 

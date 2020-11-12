@@ -72,6 +72,10 @@ in
       dhcp-host=62:82:0E:22:08:D0,${base}.7,ubuntu1804
       dhcp-host=1A:BF:F1:B8:6A:4C,${base}.8,rhel75
       dhcp-host=06:C4:EC:57:CD:07,${base}.9,slurm-head
+
+      # Freenas/r320
+      dhcp-host=c8:1f:66:c0:e3:f9,${base}.223,idrac-5HWQM02
+      dhcp-host=c8:1f:66:c0:e3:f7,${base}.224,truenas
     '';
   };
 
@@ -104,6 +108,10 @@ in
       ${base}.7   ubuntu1804
       ${base}.8   rhel75
       ${base}.9   slurm-head
+
+      # Frenas server
+      ${base}.223   idrac-truenas
+      ${base}.224   truenas
     '';
   };
 }

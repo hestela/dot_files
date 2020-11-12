@@ -25,7 +25,7 @@
             "create mask" = "0644";
             "directory mask" = "0755";
             "force user" = "nginx";
-            "force group" = "fileshare";
+            "force group" = "nginx";
           };
         help = {
           path = "/var/www/preseed";

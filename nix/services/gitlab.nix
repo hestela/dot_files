@@ -71,7 +71,7 @@ in
         enabled = true;
         host = "gitlab.easycashmoney.org";
         port = "443";
-        key = "${cert_dir}/domain.crt";
+        key = "/var/lib/acme/easycashmoney.org/key.pem";
         api_url = "http://localhost:5000/";
         issuer = "gitlab-issuer";
       };
