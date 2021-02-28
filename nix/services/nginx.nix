@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
-  cert = "/etc/letsencrypt/live/blackandred.media/fullchain.pem";
-  key = "/etc/letsencrypt/live/blackandred.media/privkey.pem";
+  cert = "/etc/letsencrypt/live/gitlab.easycashmoney.org/fullchain.pem";
+  key = "/etc/letsencrypt/live/gitlab.easycashmoney.org/privkey.pem";
   url = "easycashmoney.org";
   index_files_conf = ''
     autoindex on;
@@ -69,7 +69,7 @@ in
       forceSSL = true;
       sslCertificate = "${cert}";
       sslCertificateKey = "${key}";
-      sslTrustedCertificate = "/etc/ssl/certs/unifi.pem";
+      sslTrustedCertificate = "/var/keys/unifi.pem";
 
       # Custom proxy pass for unifi https
       locations."/" = {

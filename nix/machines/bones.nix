@@ -3,33 +3,23 @@
 {
   imports =
   [
-    ../services/openhab.nix
-    ../services/fauxmo.nix
+    #../services/openhab.nix
     ../services/nginx.nix
     ../services/unifi.nix
     ../services/dnsmasq.nix
-    ../services/samba-serv.nix
-    ../services/kraplow.nix
-    ../services/jitsi.nix
-    ../services/airsonic.nix
-    ../services/fail2ban.nix
-    ../services/gitlab.nix
-    ../services/flask.nix
-    ../services/fan-control.nix
-    ../services/heimdall.nix
-    #../services/murmur.nix
-    #../services/wireguard.nix
+    #../services/samba-serv.nix
+    #../services/kraplow.nix
+    #../services/airsonic.nix
+    #../services/fail2ban.nix
+    #../services/gitlab.nix
+    #../services/flask.nix
+    #../services/heimdall.nix
   ];
 
-  boot.kernelParams = [
-    "console=ttyS0,115200"
-    "console=tty1"
-  ];
-
-  fileSystems."/mnt/repos" = {
-    device = "senddata.corp.easycashmoney.org:/nfs/repos";
-    fsType = "nfs";
-  };
+  #fileSystems."/mnt/repos" = {
+  #  device = "senddata.corp.easycashmoney.org:/nfs/repos";
+  #  fsType = "nfs";
+  #};
 
   nixpkgs.config.allowUnfree = true;
 
@@ -44,34 +34,20 @@
     loader = {
       grub.enable = true;
       grub.version = 2;
-      grub.device = "/dev/sdb";
+      grub.device = "/dev/sda";
       grub.configurationLimit = 10;
     };
-
-    kernelModules = [
-      "ipmi_devintf"
-      "ipmi_si"
-    ];
   };
-
-  # Open up ipmitool
-  services.udev.extraRules = ''
-    KERNEL=="ipmi*", MODE="0666"
-  '';
 
   services.avahi.enable = true;
 
   environment.systemPackages = with pkgs; [
-    (import ../pkgs/bible.nix)
-    #(import ../pkgs/op25.nix)
+    #(import ../pkgs/bible.nix)
     geekbench
     #(import ../pkgs/pxeconfig.nix)
     ffmpeg-full
     htop
-    iperf
-    iperf2
-    ipmitool
-    jenkins
+    iperf3
     jre
     tmux
     tree
