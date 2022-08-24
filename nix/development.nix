@@ -8,17 +8,15 @@
     };
 
     systemPackages = with pkgs; [
-      bashCompletion
+      bash-completion
       gcc
       git                                # Git source control
       gnumake
       go
-      python27
-      python27Packages.pip
-      python27Packages.virtualenv
       sqlite
       vim_configurable
       which
+      file
     ];
   };
 

@@ -3,17 +3,20 @@
 {
   imports =
   [
-    #../services/openhab.nix
+    ../services/openhab.nix
     ../services/nginx.nix
     ../services/unifi.nix
     ../services/dnsmasq.nix
-    #../services/samba-serv.nix
-    #../services/kraplow.nix
+    ../services/grafana.nix
+    ../services/samba-serv.nix
     #../services/airsonic.nix
+    ../services/flask.nix
+    ../services/projector-flask.nix
+    ../services/cam-view.nix
+    ../services/heimdall.nix
+
+    #../services/kraplow.nix
     #../services/fail2ban.nix
-    #../services/gitlab.nix
-    #../services/flask.nix
-    #../services/heimdall.nix
   ];
 
   #fileSystems."/mnt/repos" = {
@@ -21,12 +24,29 @@
   #  fsType = "nfs";
   #};
 
+  # FTP for NVR
+  services.vsftpd = {
+    enable = true;
+    writeEnable = true;
+    localUsers = true;
+    userlist = [ "nvr" ];
+    userlistEnable = true;
+    extraConfig = ''
+      pasv_enable=Yes
+      pasv_min_port=51000
+      pasv_max_port=51999
+    '';
+  };
+
+  services.fstrim.enable = true;
+
   nixpkgs.config.allowUnfree = true;
 
   services.nfs.server.enable = true;
   services.nfs.server.exports = ''
      /opt/kickstarts *(rw,nohide,insecure,no_subtree_check)
      /opt/nfs *(rw,nohide,insecure,no_subtree_check)
+     /share/zfs *(rw,nohide,insecure,no_subtree_check)
   '';
 
   boot = {
@@ -53,26 +73,27 @@
     tree
     unzip
     wget
-    python27Packages.virtualenv
-    python38Packages.virtualenv
+    #python27Packages.virtualenv
+    #python38Packages.virtualenv
     vsftpd
     xinetd
     inetutils
     syslinux
   ];
 
-  virtualisation.docker.extraOptions = "-H tcp://0.0.0.0:4243";
+  #virtualisation.docker.extraOptions = "-H tcp://0.0.0.0:4243";
 
   users = {
     defaultUserShell = "/run/current-system/sw/bin/bash";
     extraGroups.ssl-cert.gid = 1040;
+    extraGroups.nvr.gid = 1050;
 
     extraUsers.henry = {
       isNormalUser = true;
       home = "/home/henry";
 
       # Configure for sudo, network, gfx, and docker
-      extraGroups = [ "wheel" "docker" "ssl-cert" ];
+      extraGroups = [ "wheel" "docker" "ssl-cert" "nvr" ];
       uid = 1000;
       shell = "/run/current-system/sw/bin/bash";
     };
@@ -90,14 +111,26 @@
     extraUsers.heimdall = {
       isSystemUser = true;
       home = "/opt/heimdall";
-      extraGroups = ["docker"];
+      group = "docker";
+    };
+    extraUsers.nvr = {
+      isSystemUser = true;
+      home = "/share/zfs/nvr/";
+      group = "nvr";
+    };
+    extraUsers.paperless = {
+      isNormalUser = true;
+      home = "/share/zfs/paperless-ng";
+      group = "docker";
     };
   };
 
   networking = {
     hostName = "bones";
     domain = "corp.easycashmoney.org";
-    firewall.allowedTCPPorts = [ 80 111 443 2049 42063 51820 ];
+    firewall.allowedTCPPorts = [ 21 80 111 443 2049 42063 51820 25565 ];
+    # For FTP
+    firewall.allowedTCPPortRanges = [ { from = 51000; to = 51999; } ];
     firewall.allowedUDPPorts = [ 69 ];
     firewall.allowPing = true;
   };

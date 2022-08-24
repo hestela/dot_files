@@ -1,10 +1,17 @@
 { config, pkgs, ... }:
 let
-  cert = "/etc/letsencrypt/live/gitlab.easycashmoney.org/fullchain.pem";
-  key = "/etc/letsencrypt/live/gitlab.easycashmoney.org/privkey.pem";
+  cert = "/etc/letsencrypt/live/gitlab.easycashmoney.org-0001/fullchain.pem";
+  key = "/etc/letsencrypt/live/gitlab.easycashmoney.org-0001/privkey.pem";
   url = "easycashmoney.org";
   index_files_conf = ''
     autoindex on;
+  '';
+
+  serve_files = ''
+    autoindex on;
+    location ~* \.cia$ {
+      add_header Content-disposition "attachment; filename=$1";
+    }
   '';
 in
 {
@@ -15,6 +22,7 @@ in
 
   # RTMP
   networking.firewall.allowedTCPPorts = [ 1935 4344 5050 ];
+  networking.firewall.allowedUDPPorts = [ 1935 ];
 
   # ACME renewal hack
   # the inbox acme renewal is a hot mess when it comes to multiple subdomains
@@ -22,8 +30,9 @@ in
   services.cron = {
     enable = true;
     systemCronJobs = [
-      "0 0 0 ? * SUN *  root certbot renew --standalone --pre-hook \"systemctl stop nginx\" --post-hook \"systemctl start nginx\""
+      "0 0 0 ? * SUN *  root certbot renew --standalone --pre-hook \"systemctl stop nginx\" --post-hook \"chown -R nginx:nginx /etc/letsencrypt/* && systemctl start nginx\""
     ];
+    # "0 2 26 * * root systemctl restart unifiDocker"
   };
 
   services.nginx = {
@@ -34,6 +43,22 @@ in
     recommendedOptimisation = true;
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
+
+    # Remote proxy
+    virtualHosts."gitlab.easycashmoney.org" = {
+      forceSSL = true;
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
+      locations."/".proxyPass = "http://gitlab.corp.easycashmoney.org";
+    };
+    virtualHosts."registry.easycashmoney.org" = {
+      forceSSL = true;
+      sslCertificate = "${cert}";
+      sslCertificateKey = "${key}";
+      locations."/".proxyPass = "http://gitlab.corp.easycashmoney.org:5005";
+    };
+    # For remote docker registry
+    clientMaxBodySize = "0";
 
     # Reverse proxies
     virtualHosts."game.easycashmoney.org" = {
@@ -58,12 +83,12 @@ in
       };
     };
 
-    virtualHosts."music.broganohara.com" = {
-      forceSSL = true;
-      sslCertificate = "${cert}";
-      sslCertificateKey = "${key}";
-      locations."/".proxyPass = "http://localhost:4040";
-    };
+    #virtualHosts."music.broganohara.com" = {
+    #  forceSSL = true;
+    #  sslCertificate = "${cert}";
+    #  sslCertificateKey = "${key}";
+    #  locations."/".proxyPass = "http://localhost:4040";
+    #};
 
     virtualHosts."unifi.easycashmoney.org" = {
       forceSSL = true;
@@ -71,7 +96,7 @@ in
       sslCertificateKey = "${key}";
       sslTrustedCertificate = "/var/keys/unifi.pem";
 
-      # Custom proxy pass for unifi https
+    # Custom proxy pass for unifi https
       locations."/" = {
         extraConfig = ''
             proxy_pass https://localhost:8443;
@@ -81,52 +106,79 @@ in
       };
     };
 
-    # Basic folder serving
+
+    # Grafana
     virtualHosts."easycashmoney.org" = {
       default = true;
       forceSSL = true;
       sslCertificate = "${cert}";
       sslCertificateKey = "${key}";
-      root = "/var/www/files/";
-      basicAuthFile = "/var/www/brogan-htpasswd";
-      extraConfig = "${index_files_conf}";
+      locations."/".proxyPass = "http://localhost:3000";
     };
-    virtualHosts."music.easycashmoney.org" = {
+
+    #virtualHosts."music.easycashmoney.org" = {
+    #  forceSSL = true;
+    #  sslCertificate = "${cert}";
+    #  sslCertificateKey = "${key}";
+    #  basicAuthFile = "/var/www/brogan-htpasswd";
+    #  root = "/share/brogan0/";
+    #  extraConfig = "${index_files_conf}";
+    #};
+
+    virtualHosts."paperless.easycashmoney.org" = {
       forceSSL = true;
       sslCertificate = "${cert}";
       sslCertificateKey = "${key}";
-      basicAuthFile = "/var/www/brogan-htpasswd";
-      root = "/share/brogan0/";
-      extraConfig = "${index_files_conf}";
+      locations."/".proxyPass = "http://paperless.corp.easycashmoney.org:8000";
     };
 
-    virtualHosts."broganohara.com" = {
-      forceSSL = true;
-      sslCertificate = "${cert}";
-      sslCertificateKey = "${key}";
-      locations."/" = {
-        extraConfig = ''
-          auth_basic secured;
-          auth_basic_user_file /var/www/brogan-htpasswd;
-          autoindex on;
-          root /share/brogan0/;
-        '';
-      };
+    #virtualHosts."broganohara.com" = {
+    #  forceSSL = true;
+    #  sslCertificate = "${cert}";
+    #  sslCertificateKey = "${key}";
+    #  locations."/" = {
+    #    extraConfig = ''
+    #      autoindex off;
+    #      root /share/brogan0/brogan_website/;
+    #    '';
+    #  };
+    #  locations."/live/".return = "301 https://www.youtube.com/watch?v=mS3M0H_NhRg";
 
-      locations."/Band-Practice-Recordings/" = {
-        extraConfig = ''
-          auth_basic secured;
-          auth_basic_user_file /var/www/public-htpasswd;
-          autoindex on;
-          root /share/brogan0/;
-        '';
-      };
-    };
+    #  locations."/Band-Practice-Recordings/" = {
+    #    extraConfig = ''
+    #      auth_basic secured;
+    #      auth_basic_user_file /var/www/brogan-htpasswd;
+    #      autoindex on;
+    #      root /share/brogan0/;
+    #    '';
+    #  };
+    #  locations."/Malefactor-Stems/" = {
+    #    extraConfig = ''
+    #      auth_basic secured;
+    #      auth_basic_user_file /var/www/brogan-htpasswd;
+    #      autoindex on;
+    #      root /share/brogan0/;
+    #    '';
+    #  };
+    #  locations."/bandcamp/" = {
+    #    extraConfig = ''
+    #      auth_basic secured;
+    #      auth_basic_user_file /var/www/brogan-htpasswd;
+    #      autoindex on;
+    #      root /share/brogan0/;
+    #    '';
+    #  };
+    #};
 
     virtualHosts."bones.corp.easycashmoney.org" = {
       root = "/var/www/preseed";
-      extraConfig = "${index_files_conf}";
+      extraConfig = "${serve_files}";
     };
+    virtualHosts."isnevadaonfire.org" = {
+      root = "/var/www/neb";
+      extraConfig = "${serve_files}";
+    };
+
     virtualHosts."localhost" = {
       listen = [{ addr = "0.0.0.0"; port = 4344; }];
       locations."/auth" = {
@@ -139,6 +191,7 @@ in
       };
     };
 
+                        #on_publish http://localhost:4344/auth;
     # rtmp test
     appendConfig = ''
       rtmp {
@@ -154,9 +207,8 @@ in
                 application live {
                         live on;
                         record off;
-                        on_publish http://localhost:4344/auth;
                 }
-                application local {
+                application test {
                         live on;
                         record off;
                 }
